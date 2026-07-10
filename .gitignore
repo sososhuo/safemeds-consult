@@ -1,0 +1,29 @@
+.DS_Store
+.env
+*.local
+*.log
+
+# Local Codex/project assistant assets
+.codex/
+
+# Keep the current local README out of the first GitHub upload.
+README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+backend/.venv/
+backend/.venv_linux/
+
+# Local persistence and generated knowledge stores
+backend/storage/*.sqlite3
+backend/storage/*.sqlite3-*
+backend/storage/chroma/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.npm-cache/

@@ -1,0 +1,9 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic==2.10.4
+requests==2.32.3
+pymupdf==1.25.3
+httpx==0.28.1
+chromadb==1.5.9
+neo4j==5.28.2
+langgraph==0.2.76
