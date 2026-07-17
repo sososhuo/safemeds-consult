@@ -7,3 +7,4 @@ httpx==0.28.1
 chromadb==1.5.9
 neo4j==5.28.2
 langgraph==0.2.76
+openpyxl==3.1.5

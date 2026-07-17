@@ -126,17 +126,19 @@ def build_consultation_prompt(
     flags: list[SafetyFlag],
     evidence: list[Evidence],
     kg_relations: list[KnowledgeRelation],
+    current_population: list[str] | None = None,
     safety_notice: str,
 ) -> list[dict[str, str]]:
     evidence_text = "\n".join(
         f"- [{idx + 1}] {item.drug}/{item.section}: {item.snippet} (source: {item.source})"
-        for idx, item in enumerate(evidence[:5])
+        for idx, item in enumerate(evidence[:15])
     ) or "无可用证据。"
     kg_text = "\n".join(
         f"- {item.subject} --{item.relation}--> {item.object}"
         for item in kg_relations[:8]
     ) or "无结构化图谱关系。"
     flag_text = "\n".join(f"- {item.level}: {item.message}" for item in flags) or "无额外安全标记。"
+    population_text = "、".join(current_population or []) or "未识别到特殊人群"
 
     system = (
         "你是一个中文用药安全咨询助手。"
@@ -152,6 +154,7 @@ def build_consultation_prompt(
 - 结论：{conclusion}
 - 机制：{mechanism}
 - 建议：{recommendation}
+- 本次问题识别到的特殊人群：{population_text}
 
 知识图谱关系：
 {kg_text}
@@ -169,6 +172,8 @@ def build_consultation_prompt(
 1. 先给结论，再解释原因。
 2. 不要使用“绝对安全”“一定可以”等表达。
 3. 不要建议用户自行调整处方药。
-4. 保持简洁，分 3-5 小段。
+4. 特殊人群说明只围绕“本次问题识别到的特殊人群”展开；不要把证据中出现但本次问题未识别到的人群（例如老年人、孕妇、肝肾功能不全者）写成当前用户的特殊人群风险。
+5. 如果证据片段包含与本次问题识别到的特殊人群直接相关的信息，必须在原因或建议中说明对应风险点。
+6. 保持简洁，分 3-5 小段。
 """.strip()
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]

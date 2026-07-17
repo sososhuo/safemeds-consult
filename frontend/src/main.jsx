@@ -1,19 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
+  Activity,
   AlertTriangle,
   Archive,
   ClipboardList,
   CheckCircle2,
   ChevronDown,
   Clock3,
+  Database,
   FileText,
   History,
   Loader2,
   MessageCircle,
   Pill,
+  PlusCircle,
   RefreshCw,
-  Sparkles,
   Send,
   ShieldCheck,
   Trash2,
@@ -85,7 +87,9 @@ function App() {
     }
   }
 
-  async function sendMessage() {
+  async function sendMessage(event) {
+    event?.preventDefault();
+    if (message.trim().length < 2) return;
     setLoading(true);
     setError("");
     try {
@@ -151,17 +155,22 @@ function App() {
       <header className="topbar">
         <div className="brand-block">
           <div className="brand-mark">
-            <ShieldCheck size={20} />
+            <Pill size={22} strokeWidth={2.2} />
           </div>
           <div>
             <h1>SafeMeds 用药咨询</h1>
-            <p>药物相互作用、特殊人群与风险依据核查</p>
+            <p>药物相互作用、特殊人群用药咨询</p>
           </div>
+        </div>
+        <div className="topbar-metrics" aria-label="系统能力">
+          <span><Activity size={15} />风险分级</span>
+          <span><Database size={15} />依据检索</span>
+          <span><ShieldCheck size={15} />安全提醒</span>
         </div>
         <div className="service-status">
           <span className={health?.status === "ok" ? "status-dot online" : "status-dot"} />
           <span>{health?.status === "ok" ? "服务可用" : "正在连接"}</span>
-          <button className="icon-button" onClick={refresh} disabled={refreshing} title="刷新">
+          <button className="icon-button" onClick={refresh} disabled={refreshing} title="刷新" aria-label="刷新服务状态">
             <RefreshCw className={refreshing ? "spin" : ""} size={14} />
           </button>
         </div>
@@ -183,26 +192,31 @@ function App() {
             <span><ClipboardList size={14} />用药目的</span>
           </div>
 
-          <textarea
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            placeholder="例如：我长期吃华法林，感冒发热能吃布洛芬吗？"
-          />
+          <form className="consult-form" onSubmit={sendMessage}>
+            <label className="field-label" htmlFor="consult-message">咨询内容</label>
+            <textarea
+              id="consult-message"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              placeholder="例如：我长期吃华法林，感冒发热能吃布洛芬吗？"
+            />
 
-          <div className="input-meta">
-            <span>{message.length} 字</span>
-            <span>{sessionId ? `正在查看历史 #${sessionId}` : "新的咨询"}</span>
-          </div>
+            <div className="input-meta">
+              <span>{message.length} 字</span>
+              <span>{sessionId ? `正在查看历史 #${sessionId}` : "新的咨询"}</span>
+            </div>
 
-          <div className="actions">
-            <button className="primary" onClick={sendMessage} disabled={loading || message.trim().length < 2}>
-              {loading ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-              获取建议
-            </button>
-            <button className="secondary" onClick={startNewSession} disabled={loading}>
-              新咨询
-            </button>
-          </div>
+            <div className="actions">
+              <button className="primary" type="submit" disabled={loading || message.trim().length < 2}>
+                {loading ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
+                <span>获取建议</span>
+              </button>
+              <button className="secondary" type="button" onClick={startNewSession} disabled={loading}>
+                <PlusCircle size={16} />
+                <span>新咨询</span>
+              </button>
+            </div>
+          </form>
 
           {error && <div className="error">{error}</div>}
 
@@ -219,8 +233,8 @@ function App() {
           {currentResponse ? (
             <div className="result-scroll">
               <div className="result-kicker">
-                <Sparkles size={15} />
-                <span>智能核查结果</span>
+                <Activity size={15} />
+                <span>临床风险核查</span>
               </div>
 
               <article className={`risk-card ${risk.cls}`}>
@@ -373,6 +387,7 @@ function App() {
                     onClick={(event) => deleteSession(item.id, event)}
                     disabled={deletingId === item.id}
                     title="删除咨询记录"
+                    aria-label="删除咨询记录"
                   >
                     {deletingId === item.id ? <Loader2 className="spin" size={14} /> : <Trash2 size={14} />}
                   </button>

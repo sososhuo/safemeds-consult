@@ -17,7 +17,7 @@ from app.core.config import (
 from app.schemas.analysis import Evidence
 
 
-IMPORTANT_SECTIONS = {"药物相互作用", "禁忌", "警告与注意事项", "特殊人群"}
+IMPORTANT_SECTIONS = {"药物相互作用", "禁忌", "警告与注意事项", "特殊人群", "儿童用药", "老年用药", "孕妇及哺乳期妇女用药"}
 HIGH_RISK_TERMS = {
     "禁忌",
     "避免",
@@ -41,17 +41,49 @@ def build_documents(records: List[Dict]) -> list[Dict]:
     documents: list[Dict] = []
     chunker = SimpleRagIndex([])
     for record in records:
-        for section in record.get("sections", []):
-            for idx, chunk in enumerate(chunker._chunk(section["content"])):
+        documents.extend(_build_record_documents(record, chunker))
+    return documents
+
+
+def _build_record_documents(record: Dict, chunker: "SimpleRagIndex") -> list[Dict]:
+    documents: list[Dict] = []
+    for section_index, section in enumerate(record.get("sections", [])):
+        title = section.get("title", "")
+        structured_chunks = section.get("chunks") or []
+        if structured_chunks:
+            for idx, chunk in enumerate(structured_chunks):
+                text = re.sub(r"\s+", " ", str(chunk.get("text", ""))).strip()
+                if not text:
+                    continue
                 documents.append(
                     {
-                        "source": record["source"],
-                        "drug": record["drug"],
-                        "section": section["title"],
-                        "text": chunk,
-                        "chunk_id": f"{record['drug']}::{section['title']}::{idx}",
+                        "source": record.get("source", ""),
+                        "drug": record.get("drug", ""),
+                        "section": title,
+                        "text": text,
+                        "chunk_id": f"{record.get('drug', '')}::{section_index}::{title}::structured::{idx}",
+                        "chunk_type": chunk.get("chunk_type", "section"),
+                        "population_tags": chunk.get("population_tags", []),
+                        "condition_tags": chunk.get("condition_tags", []),
+                        "risk_terms": chunk.get("risk_terms", []),
                     }
                 )
+            continue
+
+        for idx, chunk in enumerate(chunker._chunk(section.get("content", ""))):
+            documents.append(
+                {
+                    "source": record.get("source", ""),
+                    "drug": record.get("drug", ""),
+                    "section": title,
+                    "text": chunk,
+                    "chunk_id": f"{record.get('drug', '')}::{section_index}::{title}::window::{idx}",
+                    "chunk_type": "window",
+                    "population_tags": [],
+                    "condition_tags": [],
+                    "risk_terms": [],
+                }
+            )
     return documents
 
 
@@ -59,17 +91,7 @@ class SimpleRagIndex:
     def __init__(self, records: List[Dict]):
         self.documents: List[Dict] = []
         for record in records:
-            for section in record.get("sections", []):
-                for idx, chunk in enumerate(self._chunk(section["content"])):
-                    self.documents.append(
-                        {
-                            "source": record["source"],
-                            "drug": record["drug"],
-                            "section": section["title"],
-                            "text": chunk,
-                            "chunk_id": f"{record['drug']}::{section['title']}::{idx}",
-                        }
-                    )
+            self.documents.extend(_build_record_documents(record, self))
 
         self.doc_tokens = [tokenize(doc["text"]) for doc in self.documents]
         self.doc_tf = [Counter(tokens) for tokens in self.doc_tokens]
@@ -116,7 +138,8 @@ class SimpleRagIndex:
             base = self._cosine(query_vec, doc_vec, doc_norm)
             section_boost = 0.2 if doc["section"] in IMPORTANT_SECTIONS else 0.0
             drug_boost = 0.25 if doc["drug"] in drug_set else 0.0
-            score = base + section_boost + drug_boost
+            structured_boost = 0.08 if doc.get("chunk_type") in {"section", "clause", "section_part"} else 0.0
+            score = base + section_boost + drug_boost + structured_boost
             if score > 0:
                 scored.append((score, doc))
 
@@ -284,18 +307,21 @@ class ChromaRagIndex:
     def _populate(self) -> None:
         if not self.documents:
             return
-        self.collection.add(
-            ids=[doc["chunk_id"] for doc in self.documents],
-            documents=[doc["text"] for doc in self.documents],
-            metadatas=[
-                {
-                    "source": doc["source"],
-                    "drug": doc["drug"],
-                    "section": doc["section"],
-                }
-                for doc in self.documents
-            ],
-        )
+        batch_size = 5000
+        for start in range(0, len(self.documents), batch_size):
+            batch = self.documents[start : start + batch_size]
+            self.collection.add(
+                ids=[doc["chunk_id"] for doc in batch],
+                documents=[doc["text"] for doc in batch],
+                metadatas=[
+                    {
+                        "source": doc["source"],
+                        "drug": doc["drug"],
+                        "section": doc["section"],
+                    }
+                    for doc in batch
+                ],
+            )
 
     def _ensure_populated(self) -> None:
         if self.collection.count() != len(self.documents):

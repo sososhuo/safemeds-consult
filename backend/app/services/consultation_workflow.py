@@ -58,9 +58,9 @@ class MedicationRagWorkflow:
         graph.add_node("prepare_answer", self._prepare_answer)
 
         graph.set_entry_point("extract_entities")
-        graph.add_edge("extract_entities", "query_kg")
-        graph.add_edge("query_kg", "retrieve_evidence")
-        graph.add_edge("retrieve_evidence", "assess_risk")
+        graph.add_edge("extract_entities", "retrieve_evidence")
+        graph.add_edge("retrieve_evidence", "query_kg")
+        graph.add_edge("query_kg", "assess_risk")
         graph.add_edge("assess_risk", "prepare_answer")
         graph.add_edge("prepare_answer", END)
         return graph.compile()
@@ -133,8 +133,10 @@ class MedicationRagWorkflow:
     def _retrieve_evidence(self, state: MedicationRagState) -> MedicationRagState:
         evidence_query = self.service._build_evidence_query(
             state["message"],
-            state.get("kg_relations", []),
+            [],
             state.get("query_drugs", []),
+            state.get("extracted"),
+            state.get("snapshot"),
         )
         evidence = self.service.vector_index.retrieve(
             evidence_query,
@@ -146,6 +148,21 @@ class MedicationRagWorkflow:
             scoped_evidence = [item for item in evidence if item.drug in query_drugs]
             if scoped_evidence:
                 evidence = scoped_evidence
+        population = self.service._combined_population(
+            state.get("extracted"),
+            state.get("snapshot"),
+        )
+        population_evidence = self.service._retrieve_population_evidence(
+            state["message"],
+            state.get("query_drugs", []),
+            state.get("extracted"),
+            state.get("snapshot"),
+        )
+        evidence = self.service._merge_and_prioritize_evidence(
+            evidence,
+            population_evidence,
+            population,
+        )
         return {
             **state,
             "evidence_query": evidence_query,
@@ -154,7 +171,7 @@ class MedicationRagWorkflow:
             "workflow_trace": self._trace(
                 state,
                 "retrieve_evidence",
-                f"{self.service.retrieval_backend} 返回证据 {len(evidence)} 条。",
+                f"{self.service.retrieval_backend} 返回证据 {len(evidence)} 条，其中特殊人群证据 {len(population_evidence)} 条。",
             ),
         }
 
@@ -163,6 +180,8 @@ class MedicationRagWorkflow:
             state.get("query_drugs", []),
             state.get("evidence", []),
             state.get("extracted"),
+            state.get("snapshot"),
+            state.get("kg_relations", []),
         )
         recommendation = self.service._recommendation(
             risk_level,
@@ -208,6 +227,7 @@ class MedicationRagWorkflow:
             flags=state.get("safety_flags", []),
             evidence=state.get("evidence", []),
             kg_relations=state.get("kg_relations", []),
+            current_population=state["snapshot"].population,
         )
         return {
             **state,

@@ -11,9 +11,12 @@ from pathlib import Path
 
 import app.services.stages.drug_recognition as drug_recognition
 from app.repositories.consultation_repository import ConsultationRepository
-from app.schemas.consultation import KnowledgeRelation
+from app.schemas.analysis import Evidence, ExtractedContext
+from app.schemas.consultation import KnowledgeRelation, SessionSnapshot
+from app.services.llm_service import build_consultation_prompt
 from app.services.consultation_service import MedicationConsultationService
 from app.services.metrics_service import SystemMetrics, system_metrics
+from app.services.stages.risk_assessment import RiskAssessmentStage
 
 TEST_DIR = Path(__file__).resolve().parent
 DATA_PATH = TEST_DIR.parent / "data" / "processed" / "drug_knowledge_zh.json"
@@ -82,7 +85,66 @@ def load_test_records():
         return json.load(file)
 
 
+def load_population_test_records():
+    return [
+        {
+            "drug": "阿魏酸哌嗪片",
+            "aliases": [],
+            "source": "population-test",
+            "sections": [
+                {
+                    "title": "禁忌",
+                    "content": "对阿魏酸哌嗪类药物过敏者禁用。",
+                },
+                {
+                    "title": "警告与注意事项",
+                    "content": "本品禁与阿苯达唑类和双羟萘酸噻嘧啶类药物合用。",
+                },
+                {
+                    "title": "老年用药",
+                    "content": "老人应在专业医师指导下使用。",
+                },
+            ],
+            "interactions": [],
+        }
+    ]
+
+
 class TestMedicationRagWorkflow(unittest.TestCase):
+    def test_current_child_age_population_overrides_previous_elderly_snapshot(self):
+        service = MedicationConsultationService.__new__(MedicationConsultationService)
+        extracted = ExtractedContext(
+            drugs=[],
+            normalized_drugs=[],
+            population=["儿童"],
+            conditions=[],
+            risk_factors=[],
+            ambiguous_entities=[],
+        )
+        snapshot = SessionSnapshot(population=["老年人"])
+
+        merged = service._merge_snapshot(snapshot, extracted, "我7岁，发烧了")
+
+        self.assertIn("儿童", merged.population)
+        self.assertNotIn("老年人", merged.population)
+
+    def test_consultation_prompt_limits_special_population_to_current_context(self):
+        messages = build_consultation_prompt(
+            conclusion="不建议自行合用",
+            risk_level="High",
+            mechanism="儿童使用需成人监护。",
+            recommendation="咨询医生或药师。",
+            flags=[],
+            evidence=[],
+            kg_relations=[],
+            current_population=["儿童"],
+            safety_notice="安全声明",
+        )
+        prompt = messages[-1]["content"]
+
+        self.assertIn("本次问题识别到的特殊人群：儿童", prompt)
+        self.assertIn("不要把证据中出现但本次问题未识别到的人群", prompt)
+
     def test_chat_uses_langgraph_workflow(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
@@ -100,8 +162,8 @@ class TestMedicationRagWorkflow(unittest.TestCase):
             [item["node"] for item in response.workflow_trace],
             [
                 "extract_entities",
-                "query_kg",
                 "retrieve_evidence",
+                "query_kg",
                 "assess_risk",
                 "prepare_answer",
             ],
@@ -193,6 +255,126 @@ class TestMedicationRagWorkflow(unittest.TestCase):
         self.assertNotIn("fentanyl", second.extracted_context.normalized_drugs)
         self.assertEqual(second.risk_level, "Unknown")
         self.assertEqual(second.kg_relations, [])
+
+    def test_population_terms_are_added_to_evidence_query(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
+            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            extracted = ExtractedContext(
+                drugs=["levofloxacin"],
+                normalized_drugs=["levofloxacin"],
+                population=["儿童"],
+                conditions=[],
+                risk_factors=[],
+            )
+
+            query = service._build_evidence_query(
+                "儿童可以吃左氧氟沙星吗",
+                kg_relations=[],
+                drugs=["levofloxacin"],
+                extracted=extracted,
+            )
+
+        self.assertIn("儿童", query)
+        self.assertIn("18岁以下", query)
+        self.assertIn("特殊人群", query)
+
+    def test_kg_high_relation_uplifts_risk_without_downgrading(self):
+        service = MedicationConsultationService.__new__(MedicationConsultationService)
+        service.risk_engine = RiskAssessmentStage([])
+        evidence = [
+            Evidence(
+                source="unit",
+                drug="drug_a",
+                section="一般信息",
+                snippet="当前资料提示可按说明书使用。",
+                score=1.0,
+            )
+        ]
+        kg_relations = [
+            KnowledgeRelation(
+                subject="drug_a",
+                relation="禁忌合用",
+                object="drug_b",
+                source="unit_kg",
+                weight=1.3,
+                risk_level="High",
+                mechanism="图谱提示 drug_a 与 drug_b 禁忌合用。",
+                recommendation="避免合用。",
+            )
+        ]
+
+        risk_level, mechanism, _ = service._assess(
+            ["drug_a", "drug_b"],
+            evidence,
+            kg_relations=kg_relations,
+        )
+
+        self.assertEqual(risk_level, "High")
+        self.assertIn("图谱提示", mechanism)
+
+    def test_missing_kg_relation_does_not_downgrade_high_rag_risk(self):
+        service = MedicationConsultationService.__new__(MedicationConsultationService)
+        service.risk_engine = RiskAssessmentStage([])
+        evidence = [
+            Evidence(
+                source="unit",
+                drug="drug_a",
+                section="药物相互作用",
+                snippet="合用可能显著增加严重出血风险，应避免合用。",
+                score=1.0,
+            )
+        ]
+
+        risk_level, _, _ = service._assess(
+            ["drug_a", "drug_b"],
+            evidence,
+            kg_relations=[],
+        )
+
+        self.assertEqual(risk_level, "High")
+
+    def test_child_population_restriction_affects_single_drug_risk(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
+            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            service.kg = FakeKnowledgeGraph()
+
+            response = service.chat("儿童可以吃左氧氟沙星吗")
+
+        self.assertEqual(response.risk_level, "High")
+        self.assertIn("儿童", response.extracted_context.population)
+        self.assertIn("levofloxacin", response.extracted_context.normalized_drugs)
+        self.assertTrue(any("18 岁以下" in item.snippet for item in response.evidence))
+        self.assertTrue(any(flag.level == "danger" and "儿童" in flag.message for flag in response.safety_flags))
+
+    def test_elderly_population_risk_affects_single_drug_risk(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
+            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            service.kg = FakeKnowledgeGraph()
+
+            response = service.chat("老年人正在服用华法林，需要注意什么")
+
+        self.assertEqual(response.risk_level, "Medium")
+        self.assertIn("老年人", response.extracted_context.population)
+        self.assertIn("warfarin", response.extracted_context.normalized_drugs)
+        self.assertTrue(any("老年" in item.snippet for item in response.evidence))
+        self.assertTrue(any(flag.level == "warning" and "老年人" in flag.message for flag in response.safety_flags))
+
+    def test_population_specific_sections_are_forced_into_evidence(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
+            service = MedicationConsultationService(records=load_population_test_records(), repository=repo)
+            service.kg = FakeKnowledgeGraph()
+
+            response = service.chat("老人正在服用阿魏酸哌嗪片，需要注意什么")
+
+        self.assertEqual(response.risk_level, "Medium")
+        self.assertIn("老年人", response.extracted_context.population)
+        self.assertIn("阿魏酸哌嗪片", response.extracted_context.normalized_drugs)
+        self.assertTrue(any(item.section == "老年用药" and "专业医师指导" in item.snippet for item in response.evidence))
+        self.assertTrue(any(flag.level == "warning" and "老年人" in flag.message for flag in response.safety_flags))
 
 
 if __name__ == "__main__":

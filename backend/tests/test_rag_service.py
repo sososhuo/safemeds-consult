@@ -12,7 +12,7 @@ import json
 import unittest
 from pathlib import Path
 
-from app.services.rag_service import BM25RagIndex, HybridRagIndex, SimpleRagIndex
+from app.services.rag_service import BM25RagIndex, HybridRagIndex, SimpleRagIndex, build_documents
 
 TEST_DIR = Path(__file__).resolve().parent
 DATA_PATH = TEST_DIR.parent / "data" / "processed" / "drug_knowledge_zh.json"
@@ -105,6 +105,37 @@ class TestSimpleRagIndex(unittest.TestCase):
                 max_interaction_score, max_other_score * 0.8,
                 "相互作用章节应获得相近或更高分数",
             )
+
+    def test_structured_chunks_are_indexed_without_window_splitting(self):
+        records = [
+            {
+                "drug": "阿魏酸哌嗪片",
+                "source": "unit-test",
+                "sections": [
+                    {
+                        "title": "老年用药",
+                        "content": "1. 老人应在专业医师指导下使用",
+                        "chunks": [
+                            {
+                                "text": "老人应在专业医师指导下使用",
+                                "chunk_type": "section",
+                                "population_tags": ["老年人"],
+                                "risk_terms": ["专业医师指导"],
+                            }
+                        ],
+                    }
+                ],
+            }
+        ]
+
+        documents = build_documents(records)
+        self.assertEqual(len(documents), 1)
+        self.assertEqual(documents[0]["text"], "老人应在专业医师指导下使用")
+        self.assertEqual(documents[0]["chunk_type"], "section")
+
+        index = SimpleRagIndex(records)
+        results = index.retrieve("老人 阿魏酸哌嗪片", ["阿魏酸哌嗪片"], top_k=1)
+        self.assertEqual(results[0].snippet, "老人应在专业医师指导下使用")
 
 
 class TestHybridRagIndex(unittest.TestCase):

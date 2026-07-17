@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from time import perf_counter
 from typing import Dict, List
 
@@ -23,6 +24,66 @@ from app.services.stages.risk_assessment import RiskAssessmentStage
 
 
 SAFETY_NOTICE = "本系统用于用药风险信息检索与咨询辅助，不提供诊断、处方或替代医生/药师的医疗建议。"
+
+POPULATION_QUERY_TERMS = {
+    "老年人": ["老年", "老人", "老年患者", "高龄", "65岁", "65 岁", "特殊人群", "风险增高", "风险更高", "剂量选择", "清除率", "AUC", "小剂量"],
+    "儿童": ["儿童", "小儿", "婴幼儿", "18岁以下", "18 岁以下", "儿科", "特殊人群", "禁用", "慎用"],
+    "妊娠/备孕": ["妊娠", "孕妇", "孕期", "备孕", "胎儿", "特殊人群", "禁用", "慎用"],
+    "哺乳期": ["哺乳", "乳汁", "婴儿", "特殊人群", "禁用", "慎用"],
+    "肾功能相关": ["肾功能", "肾功能不全", "eGFR", "透析", "剂量调整", "特殊人群"],
+    "肝功能相关": ["肝功能", "肝功能不全", "转氨酶", "减量", "特殊人群"],
+    "心力衰竭": ["心力衰竭", "心衰", "水肿", "慎用", "禁用"],
+}
+
+POPULATION_MATCH_TERMS = {
+    "老年人": ["老年", "老人", "老年患者", "高龄", "65岁", "65 岁"],
+    "儿童": ["儿童", "小儿", "婴幼儿", "18岁以下", "18 岁以下", "儿科"],
+    "妊娠/备孕": ["妊娠", "孕妇", "孕期", "备孕", "胎儿"],
+    "哺乳期": ["哺乳", "乳汁", "婴儿"],
+    "肾功能相关": ["肾功能", "肾功能不全", "eGFR", "透析"],
+    "肝功能相关": ["肝功能", "肝功能不全", "转氨酶"],
+    "心力衰竭": ["心力衰竭", "心衰"],
+}
+
+POPULATION_HIGH_TERMS = ["禁用", "禁止", "禁忌", "不得", "避免", "原则上禁用", "致畸"]
+POPULATION_MEDIUM_TERMS = [
+    "慎用",
+    "风险增高",
+    "风险更高",
+    "应监测",
+    "监测",
+    "减量",
+    "调整剂量",
+    "起始剂量",
+    "不宜",
+    "医师指导",
+    "医生指导",
+    "药师指导",
+    "专业医师指导",
+    "遵医嘱",
+    "成人监护",
+    "剂量选择",
+    "低剂量",
+    "小剂量",
+    "清除率",
+    "AUC",
+    "肝功能",
+    "肾功能",
+    "心功能",
+    "合用其他药物",
+]
+POPULATION_SECTION_TITLES = {
+    "老年人": ["老年用药", "特殊人群", "警告与注意事项"],
+    "儿童": ["儿童用药", "特殊人群", "警告与注意事项"],
+    "妊娠/备孕": ["孕妇及哺乳期妇女用药", "妊娠", "特殊人群", "警告与注意事项"],
+    "哺乳期": ["孕妇及哺乳期妇女用药", "哺乳", "特殊人群", "警告与注意事项"],
+    "肾功能相关": ["肾功能", "特殊人群", "警告与注意事项", "用法用量"],
+    "肝功能相关": ["肝功能", "特殊人群", "警告与注意事项", "用法用量"],
+    "心力衰竭": ["心力衰竭", "心衰", "警告与注意事项", "禁忌"],
+}
+RISK_ORDER = {"Unknown": 0, "Low": 1, "Medium": 2, "High": 3}
+KG_HIGH_RELATIONS = {"禁忌合用", "禁用于", "CONTRAINDICATED_WITH", "CONTRAINDICATED_FOR"}
+KG_MEDIUM_RELATIONS = {"慎用于", "检查注意", "USE_WITH_CAUTION_IN", "CAUTION_FOR", "EXAM_CAUTION"}
 
 
 class MedicationConsultationService:
@@ -55,8 +116,8 @@ class MedicationConsultationService:
             "workflow_backend": "langgraph",
             "workflow_nodes": [
                 "extract_entities",
-                "query_kg",
                 "retrieve_evidence",
+                "query_kg",
                 "assess_risk",
                 "prepare_answer",
             ],
@@ -115,13 +176,20 @@ class MedicationConsultationService:
     def _merge_snapshot(self, snapshot: SessionSnapshot, extracted: ExtractedContext, message: str) -> SessionSnapshot:
         return SessionSnapshot(
             drugs=sorted(set(snapshot.drugs + extracted.normalized_drugs)),
-            population=sorted(set(snapshot.population + extracted.population)),
+            population=self._merge_population(extracted.population, snapshot.population),
             conditions=sorted(set(snapshot.conditions + extracted.conditions)),
             risk_factors=sorted(set(snapshot.risk_factors + extracted.risk_factors)),
             last_question=message,
         )
 
-    def _build_evidence_query(self, message: str, kg_relations: list[KnowledgeRelation], drugs: list[str] | None = None) -> str:
+    def _build_evidence_query(
+        self,
+        message: str,
+        kg_relations: list[KnowledgeRelation],
+        drugs: list[str] | None = None,
+        extracted: ExtractedContext | None = None,
+        snapshot: SessionSnapshot | None = None,
+    ) -> str:
         drug_set = set(drugs or [])
         scoped_relations = [
             item for item in kg_relations
@@ -130,18 +198,269 @@ class MedicationConsultationService:
         relation_terms = " ".join(
             f"{item.subject} {item.object}" for item in scoped_relations[:6]
         )
-        return f"{message} {relation_terms}".strip()
+        population = self._combined_population(extracted, snapshot)
+        conditions = sorted(set((extracted.conditions if extracted else []) + (snapshot.conditions if snapshot else [])))
+        risk_factors = sorted(set((extracted.risk_factors if extracted else []) + (snapshot.risk_factors if snapshot else [])))
+        context_terms = " ".join(
+            [
+                *self._population_query_terms(population),
+                *conditions,
+                *risk_factors,
+            ]
+        )
+        return f"{message} {relation_terms} {context_terms}".strip()
 
-    def _assess(self, drugs: list[str], evidence: list[Evidence], extracted: ExtractedContext | None = None) -> tuple[RiskLevel, str, dict]:
+    def _retrieve_population_evidence(
+        self,
+        message: str,
+        drugs: list[str],
+        extracted: ExtractedContext | None = None,
+        snapshot: SessionSnapshot | None = None,
+        top_k: int = 12,
+    ) -> list[Evidence]:
+        population = self._combined_population(extracted, snapshot)
+        if not population or not drugs:
+            return []
+
+        population_query = self._build_population_evidence_query(message, drugs, population)
+        vector_hits = self.vector_index.retrieve(population_query, drugs, top_k=top_k)
+        vector_hits = [
+            item for item in vector_hits
+            if item.drug in set(drugs) and self._is_population_evidence(item, population)
+        ]
+        direct_hits = self._direct_population_evidence(drugs, population)
+        return self._prioritize_population_evidence(
+            self._dedupe_evidence([*direct_hits, *vector_hits]),
+            population,
+        )[:top_k]
+
+    def _build_population_evidence_query(self, message: str, drugs: list[str], population: list[str]) -> str:
+        section_terms: list[str] = []
+        for group in population:
+            section_terms.extend(POPULATION_SECTION_TITLES.get(group, []))
+        terms = [
+            message,
+            *drugs,
+            *self._population_query_terms(population),
+            *section_terms,
+            "特殊人群",
+            "用药前确认",
+            "禁忌",
+            "注意事项",
+            "用法用量",
+        ]
+        return " ".join(dict.fromkeys(term for term in terms if term)).strip()
+
+    def _direct_population_evidence(self, drugs: list[str], population: list[str]) -> list[Evidence]:
+        drug_set = set(drugs)
+        hits: list[Evidence] = []
+        for record in self.records:
+            if record.get("drug") not in drug_set:
+                continue
+            for section in record.get("sections", []):
+                title = section.get("title", "")
+                content = section.get("content", "")
+                evidence = Evidence(
+                    source=record.get("source", ""),
+                    drug=record.get("drug", ""),
+                    section=title,
+                    snippet=content[:320],
+                    score=1.0,
+                )
+                if self._is_population_evidence(evidence, population):
+                    hits.append(evidence)
+        return hits
+
+    def _combined_population(
+        self,
+        extracted: ExtractedContext | None = None,
+        snapshot: SessionSnapshot | None = None,
+    ) -> list[str]:
+        return self._merge_population(
+            extracted.population if extracted else [],
+            snapshot.population if snapshot else [],
+        )
+
+    def _merge_population(self, current: list[str], previous: list[str]) -> list[str]:
+        merged = set(previous)
+        current_set = set(current)
+        if "儿童" in current_set and "老年人" not in current_set:
+            merged.discard("老年人")
+        if "老年人" in current_set and "儿童" not in current_set:
+            merged.discard("儿童")
+        merged.update(current_set)
+        return sorted(merged)
+
+    def _is_population_evidence(self, item: Evidence, population: list[str]) -> bool:
+        text = f"{item.section} {item.snippet}"
+        for group in population:
+            match_terms = POPULATION_MATCH_TERMS.get(group, [group])
+            section_terms = POPULATION_SECTION_TITLES.get(group, [])
+            if any(term in text for term in match_terms + section_terms):
+                return True
+        return False
+
+    def _merge_and_prioritize_evidence(
+        self,
+        evidence: list[Evidence],
+        population_evidence: list[Evidence],
+        population: list[str],
+        limit: int = 12,
+    ) -> list[Evidence]:
+        merged = self._dedupe_evidence([*population_evidence, *evidence])
+        if population:
+            merged = self._prioritize_population_evidence(merged, population)
+        return merged[:limit]
+
+    def _dedupe_evidence(self, evidence: list[Evidence]) -> list[Evidence]:
+        seen: set[tuple[str, str, str, str]] = set()
+        unique: list[Evidence] = []
+        for item in evidence:
+            normalized_snippet = re.sub(r"^\s*\d+[.、)]\s*", "", item.snippet).strip()
+            key = (item.source, item.drug, item.section, normalized_snippet)
+            if key in seen:
+                continue
+            seen.add(key)
+            unique.append(item)
+        return unique
+
+    def _prioritize_population_evidence(self, evidence: list[Evidence], population: list[str]) -> list[Evidence]:
+        def score(item: Evidence) -> float:
+            value = item.score
+            if self._is_population_evidence(item, population):
+                value += 2.0
+            if any(item.section == title for group in population for title in POPULATION_SECTION_TITLES.get(group, [])):
+                value += 0.8
+            if any(term in item.snippet for term in POPULATION_HIGH_TERMS):
+                value += 0.4
+            if any(term in item.snippet for term in POPULATION_MEDIUM_TERMS):
+                value += 0.3
+            return value
+
+        return sorted(
+            [item.model_copy(update={"score": round(score(item), 4)}) for item in evidence],
+            key=lambda item: item.score,
+            reverse=True,
+        )
+
+    def _assess(
+        self,
+        drugs: list[str],
+        evidence: list[Evidence],
+        extracted: ExtractedContext | None = None,
+        snapshot: SessionSnapshot | None = None,
+        kg_relations: list[KnowledgeRelation] | None = None,
+    ) -> tuple[RiskLevel, str, dict]:
         if extracted and extracted.ambiguous_entities:
             return "Unknown", "当前问题包含口语化、类别或复方药品表达，无法作为具体药品组合进行精确相互作用判断。", {}
+        population = self._combined_population(extracted, snapshot)
+        population_signal = self._population_evidence_signal(
+            evidence,
+            population,
+        )
         if len(drugs) < 2:
+            if drugs and population_signal:
+                level, mechanism = population_signal
+                return level, mechanism, {}
             return "Unknown", "当前问题中少于两个明确药物，无法对药物相互作用做确定性判断。", {}
         pair_hit = self.risk_engine._match_pair(drugs)
         risk_level, mechanism = self.risk_engine._assess(drugs, evidence, pair_hit)
-        if not evidence and not pair_hit:
+        if population_signal:
+            population_level, population_mechanism = population_signal
+            if RISK_ORDER[population_level] > RISK_ORDER[risk_level]:
+                risk_level = population_level
+            if population_mechanism not in mechanism:
+                mechanism = f"{mechanism} 同时，{population_mechanism}"
+        kg_signal = self._kg_risk_signal(kg_relations or [], drugs)
+        if kg_signal:
+            kg_level, kg_mechanism = kg_signal
+            if RISK_ORDER[kg_level] > RISK_ORDER[risk_level]:
+                risk_level = kg_level
+            if kg_mechanism not in mechanism:
+                mechanism = f"{mechanism} 同时，{kg_mechanism}"
+        if not evidence and not pair_hit and not kg_signal:
             return "Unknown", "当前本地知识库和向量检索未找到足够证据，不能做确定性判断。", pair_hit
         return risk_level, mechanism, pair_hit
+
+    def _kg_risk_signal(
+        self,
+        kg_relations: list[KnowledgeRelation],
+        drugs: list[str],
+    ) -> tuple[RiskLevel, str] | None:
+        if not kg_relations:
+            return None
+
+        drug_set = set(drugs)
+        scoped = [
+            item for item in kg_relations
+            if not drug_set or item.subject in drug_set or item.object in drug_set
+        ]
+        if not scoped:
+            return None
+
+        def relation_level(item: KnowledgeRelation) -> RiskLevel | None:
+            if item.risk_level in RISK_ORDER:
+                return item.risk_level
+            if item.relation in KG_HIGH_RELATIONS:
+                return "High"
+            if item.relation == "风险" and item.object == "High":
+                return "High"
+            if item.relation in KG_MEDIUM_RELATIONS:
+                return "Medium"
+            if item.relation == "风险" and item.object == "Medium":
+                return "Medium"
+            return None
+
+        best_relation: KnowledgeRelation | None = None
+        best_level: RiskLevel | None = None
+        for item in scoped:
+            level = relation_level(item)
+            if level is None:
+                continue
+            if best_level is None or RISK_ORDER[level] > RISK_ORDER[best_level]:
+                best_level = level
+                best_relation = item
+
+        if best_relation is None or best_level is None:
+            return None
+
+        mechanism = (
+            best_relation.mechanism
+            or f"知识图谱校验命中结构化关系：{best_relation.subject} - {best_relation.relation} - {best_relation.object}。"
+        )
+        if best_relation.recommendation and best_relation.recommendation not in mechanism:
+            mechanism = f"{mechanism} {best_relation.recommendation}"
+        return best_level, mechanism
+
+    def _population_query_terms(self, population: list[str]) -> list[str]:
+        terms: list[str] = []
+        for item in population:
+            terms.extend(POPULATION_QUERY_TERMS.get(item, [item]))
+        return list(dict.fromkeys(terms))
+
+    def _population_evidence_signal(self, evidence: list[Evidence], population: list[str]) -> tuple[RiskLevel, str] | None:
+        if not evidence or not population:
+            return None
+
+        matched: list[tuple[str, Evidence]] = []
+        for group in population:
+            match_terms = POPULATION_MATCH_TERMS.get(group, [group])
+            for item in evidence:
+                text = f"{item.section} {item.snippet}"
+                if item.section == "特殊人群" or any(term in text for term in match_terms):
+                    if any(term in text for term in match_terms):
+                        matched.append((group, item))
+
+        if not matched:
+            return None
+
+        joined = " ".join(item.snippet for _, item in matched)
+        groups = "、".join(sorted({group for group, _ in matched}))
+        if any(term in joined for term in POPULATION_HIGH_TERMS):
+            return "High", f"检索证据提示该药在{groups}相关场景中存在禁用、禁忌或应避免使用等限制。"
+        if any(term in joined for term in POPULATION_MEDIUM_TERMS):
+            return "Medium", f"检索证据提示{groups}用药时风险可能增高，需谨慎使用、监测或由医生药师确认。"
+        return None
 
     def _recommendation(
         self,
@@ -188,6 +507,11 @@ class MedicationConsultationService:
             flags.append(SafetyFlag(level="warning", message="未召回足够说明书/指南证据，结论已降级处理。"))
         if len(snapshot.drugs) < 2:
             flags.append(SafetyFlag(level="info", message="当前上下文少于两个明确药物，无法完整评估相互作用。"))
+        population_signal = self._population_evidence_signal(evidence, snapshot.population)
+        if population_signal:
+            level, message = population_signal
+            flag_level = "danger" if level == "High" else "warning"
+            flags.append(SafetyFlag(level=flag_level, message=message))
         return flags
 
     def _memory_updates(self, previous: SessionSnapshot, current: SessionSnapshot) -> list[MemoryUpdate]:
@@ -208,6 +532,7 @@ class MedicationConsultationService:
         flags: list[SafetyFlag],
         evidence: list[Evidence],
         kg_relations: list[KnowledgeRelation],
+        current_population: list[str] | None = None,
     ) -> str:
         self._last_response_fallback_used = False
         if LLM_ENABLE_RESPONSE_GENERATION and self.llm_client.configured:
@@ -221,6 +546,7 @@ class MedicationConsultationService:
                         flags=flags,
                         evidence=evidence,
                         kg_relations=kg_relations,
+                        current_population=current_population,
                         safety_notice=SAFETY_NOTICE,
                     )
                 )

@@ -36,8 +36,8 @@ COMBINATION_PATTERN = re.compile(
 
 # ---------- 特殊人群关键词 ----------
 POPULATION_PATTERNS: List[Tuple[str, str]] = [
-    ("65", "老年人"),
     ("老年", "老年人"),
+    ("老人", "老年人"),
     ("高龄", "老年人"),
     ("孕", "妊娠/备孕"),
     ("哺乳", "哺乳期"),
@@ -50,18 +50,87 @@ POPULATION_PATTERNS: List[Tuple[str, str]] = [
     ("心衰", "心力衰竭"),
 ]
 
+AGE_PATTERN = re.compile(
+    r"(?<![\d.])(?P<age>\d{1,3}|[零〇一二两三四五六七八九十百]{1,8})\s*(?:岁|周岁|岁半|周岁半)"
+)
+CHINESE_DIGITS = {
+    "零": 0,
+    "〇": 0,
+    "一": 1,
+    "二": 2,
+    "两": 2,
+    "三": 3,
+    "四": 4,
+    "五": 5,
+    "六": 6,
+    "七": 7,
+    "八": 8,
+    "九": 9,
+}
+
 # ---------- 疾病关键词 ----------
 CONDITION_KEYWORDS = [
     "高血压", "糖尿病", "房颤", "心房颤动", "感染", "感冒",
     "冠心病", "冠脉", "肾功能不全", "肝功能不全", "心衰",
     "心力衰竭", "高血脂", "高脂血症", "哮喘", "痛风",
+    "肠胃炎", "胃肠炎", "胃炎", "肠炎", "消化道溃疡",
 ]
 
 # ---------- 风险因素关键词 ----------
 RISK_FACTOR_KEYWORDS = [
     "出血", "抗凝", "低血压", "高钾", "低钾", "肾功能",
     "肝功能", "肌痛", "肌无力", "横纹肌", "过敏",
+    "胃肠道", "消化道", "胃痛", "腹痛",
 ]
+
+
+def parse_age_token(value: str) -> int | None:
+    """Parse Arabic or common Chinese age numerals into an integer age."""
+    value = value.strip()
+    if not value:
+        return None
+    if value.isdigit():
+        age = int(value)
+        return age if 0 <= age <= 130 else None
+    if any(char not in CHINESE_DIGITS and char not in {"十", "百"} for char in value):
+        return None
+
+    if "百" in value:
+        left, _, right = value.partition("百")
+        hundreds = CHINESE_DIGITS.get(left, 1 if not left else None)
+        if hundreds is None:
+            return None
+        rest = parse_age_token(right) if right else 0
+        if rest is None:
+            return None
+        age = hundreds * 100 + rest
+        return age if 0 <= age <= 130 else None
+
+    if "十" in value:
+        left, _, right = value.partition("十")
+        tens = CHINESE_DIGITS.get(left, 1 if not left else None)
+        ones = CHINESE_DIGITS.get(right, 0 if not right else None)
+        if tens is None or ones is None:
+            return None
+        age = tens * 10 + ones
+        return age if 0 <= age <= 130 else None
+
+    if len(value) == 1:
+        return CHINESE_DIGITS.get(value)
+    return None
+
+
+def population_from_age(age: int) -> str | None:
+    """Map age to medication-safety populations.
+
+    Uses common international cutoffs: pediatric patients are under 18 years;
+    older adults are 65 years and above.
+    """
+    if age < 18:
+        return "儿童"
+    if age >= 65:
+        return "老年人"
+    return None
 
 
 def build_drug_dictionary(records: list[Dict]) -> Dict[str, Dict]:
@@ -70,6 +139,7 @@ def build_drug_dictionary(records: list[Dict]) -> Dict[str, Dict]:
     同时补全 interaction 中被引用但无独立条目的药物。
     """
     drug_dict: Dict[str, Dict] = {}
+    canonical_names = {item["drug"].lower(): item["drug"] for item in records}
 
     # 补充高频交互对象（防止只出现在 interaction 中而无法被识别）
     SUPPLEMENTARY_DRUGS: Dict[str, List[str]] = {
@@ -90,13 +160,27 @@ def build_drug_dictionary(records: list[Dict]) -> Dict[str, Dict]:
         "fentanyl": ["芬太尼", "芬太尼贴", "芬太尼透皮贴", "fentanyl"],
     }
 
-    # 从知识库记录中提取
+    # 从知识库记录中提取，真实药名优先，避免脏别名覆盖独立药品。
     for item in records:
         drug = item["drug"]
-        aliases = item.get("aliases", [])
-        all_names = [drug] + aliases
-        for name in all_names:
-            drug_dict[name.lower()] = {"canonical": drug, "source": "knowledge_base"}
+        for variant in drug_name_variants(drug):
+            drug_dict[variant.lower()] = {"canonical": drug, "source": "knowledge_base"}
+
+    for item in records:
+        drug = item["drug"]
+        for name in item.get("aliases", []):
+            lower_name = name.lower()
+            if lower_name in canonical_names and canonical_names[lower_name] != drug:
+                continue
+            if lower_name in drug_dict and drug_dict[lower_name]["canonical"] != drug:
+                continue
+            for variant in drug_name_variants(name):
+                variant_key = variant.lower()
+                if variant_key in canonical_names and canonical_names[variant_key] != drug:
+                    continue
+                if variant_key in drug_dict and drug_dict[variant_key]["canonical"] != drug:
+                    continue
+                drug_dict[variant_key] = {"canonical": drug, "source": "knowledge_base_alias"}
 
     # 补充高频交互对象
     for canonical, aliases in SUPPLEMENTARY_DRUGS.items():
@@ -108,6 +192,15 @@ def build_drug_dictionary(records: list[Dict]) -> Dict[str, Dict]:
     return drug_dict
 
 
+def drug_name_variants(name: str) -> set[str]:
+    variants = {name}
+    if "阿司匹林" in name:
+        variants.add(name.replace("阿司匹林", "阿斯匹林"))
+    if "阿斯匹林" in name:
+        variants.add(name.replace("阿斯匹林", "阿司匹林"))
+    return variants
+
+
 class DrugRecognitionStage(BaseStage):
     """药物实体识别阶段。"""
 
@@ -115,10 +208,20 @@ class DrugRecognitionStage(BaseStage):
         self.records = records
         # 别名 -> 标准名映射
         self.alias_map: Dict[str, str] = {}
+        canonical_names = {item["drug"].lower(): item["drug"] for item in records}
         for item in records:
-            self.alias_map[item["drug"].lower()] = item["drug"]
+            for variant in drug_name_variants(item["drug"]):
+                self.alias_map[variant.lower()] = item["drug"]
+        for item in records:
             for alias in item.get("aliases", []):
-                self.alias_map[alias.lower()] = item["drug"]
+                alias_key = alias.lower()
+                for variant in drug_name_variants(alias):
+                    variant_key = variant.lower()
+                    if variant_key in canonical_names and canonical_names[variant_key] != item["drug"]:
+                        continue
+                    if variant_key in self.alias_map and self.alias_map[variant_key] != item["drug"]:
+                        continue
+                    self.alias_map[variant_key] = item["drug"]
         # 完整的药物词典（含补充药物）
         self.drug_dict = build_drug_dictionary(records)
         # 知识库中的已知药物集合
@@ -147,6 +250,7 @@ class DrugRecognitionStage(BaseStage):
     def _extract(self, question: str) -> ExtractedContext:
         drugs = self._extract_drugs(question)
         ambiguous_entities = self._extract_llm_entities(question, drugs)
+        drugs = self._filter_negated(question, drugs)
         normalized = sorted(set(drugs))
 
         population = self._extract_population(question)
@@ -177,8 +281,21 @@ class DrugRecognitionStage(BaseStage):
         for item in payload.get("specific_drugs", []) or []:
             mention = str(item.get("mention", "")).strip()
             normalized = str(item.get("normalized", "")).strip()
-            canonical = self._canonical_from_llm_value(normalized) or self._canonical_from_llm_value(mention)
+            mention_canonical = self._canonical_from_llm_value(mention)
+            normalized_canonical = self._canonical_from_llm_value(normalized)
+            canonical = mention_canonical or normalized_canonical
             if canonical and canonical in self.known_drugs:
+                if mention and not mention_canonical:
+                    ambiguous.append(
+                        {
+                            "mention": mention,
+                            "entity_type": "uncertain_specific_drug",
+                            "normalized": normalized or mention,
+                            "reason": "原文提及未能直接匹配到知识库药品，暂不使用 LLM 归一化结果进行精确计算。",
+                            "user_message": "请补充或确认完整药品名称。",
+                        }
+                    )
+                    continue
                 if canonical not in seen_drugs:
                     found_drugs.append(canonical)
                     seen_drugs.add(canonical)
@@ -252,7 +369,7 @@ class DrugRecognitionStage(BaseStage):
 
         # 策略 1：精确别名匹配
         for alias, canonical in self.alias_map.items():
-            if alias and alias in lower:
+            if len(alias) >= 2 and alias in lower:
                 found.append(canonical)
 
         # 策略 2：从 drug_dict 匹配（覆盖补充药物）
@@ -298,13 +415,26 @@ class DrugRecognitionStage(BaseStage):
 
     def _extract_population(self, question: str) -> List[str]:
         result = []
+        for match in AGE_PATTERN.finditer(question):
+            age = parse_age_token(match.group("age"))
+            if age is None:
+                continue
+            label = population_from_age(age)
+            if label:
+                result.append(label)
         for pattern, label in POPULATION_PATTERNS:
             if pattern in question:
                 result.append(label)
         return result
 
     def _extract_conditions(self, question: str) -> List[str]:
-        return [kw for kw in CONDITION_KEYWORDS if kw in question]
+        matched = [kw for kw in CONDITION_KEYWORDS if kw in question]
+        result: list[str] = []
+        for item in sorted(matched, key=len, reverse=True):
+            if any(item != kept and item in kept for kept in result):
+                continue
+            result.append(item)
+        return sorted(result)
 
     def _extract_risk_factors(self, question: str) -> List[str]:
         return [kw for kw in RISK_FACTOR_KEYWORDS if kw in question]

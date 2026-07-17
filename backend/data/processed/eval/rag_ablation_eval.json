@@ -1,0 +1,3567 @@
+{
+  "case_count": 32,
+  "case_groups": {
+    "儿童": 8,
+    "成人": 8,
+    "孕妇": 8,
+    "老年人": 8
+  },
+  "variants": [
+    {
+      "name": "Baseline A: Chroma only",
+      "total_cases": 32,
+      "elapsed_seconds": 205.06,
+      "high_risk_accuracy": 0.5312,
+      "evidence_recall_hit_rate": 0.0625,
+      "unknown_rate": 0.0,
+      "fallback_rate": 0.0,
+      "risk_distribution": {
+        "High": 17,
+        "Medium": 11,
+        "Low": 4
+      },
+      "by_group": {
+        "儿童": {
+          "total_cases": 8,
+          "high_risk_accuracy": 1.0,
+          "evidence_recall_hit_rate": 0.0,
+          "unknown_rate": 0.0
+        },
+        "成人": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.375,
+          "evidence_recall_hit_rate": 0.0,
+          "unknown_rate": 0.0
+        },
+        "孕妇": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.625,
+          "evidence_recall_hit_rate": 0.125,
+          "unknown_rate": 0.0
+        },
+        "老年人": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.125,
+          "evidence_recall_hit_rate": 0.125,
+          "unknown_rate": 0.0
+        }
+      },
+      "cases": [
+        {
+          "case_id": "child_01",
+          "group": "儿童",
+          "question": "我7岁，发烧了，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.8821,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "盐酸丙米嗪片",
+              "section": "儿童用药",
+              "score": 0.8704,
+              "snippet": "6岁以下儿童禁用。6岁以上儿童酌情减量"
+            },
+            {
+              "drug": "盐酸氯米帕明片",
+              "section": "儿童用药",
+              "score": 0.8704,
+              "snippet": "6岁以下儿童禁用，6岁以上儿童酌情减量"
+            }
+          ]
+        },
+        {
+          "case_id": "child_02",
+          "group": "儿童",
+          "question": "我3岁，家里只有对乙酰氨基酚片，能直接吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "对乙酰氨基酚片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "复方甲苯咪唑乳膏",
+              "section": "儿童用药",
+              "score": 0.8557,
+              "snippet": "2岁以下幼儿禁用"
+            },
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.8407,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "萘普生钠颗粒",
+              "section": "儿童用药",
+              "score": 0.8401,
+              "snippet": "儿童慎用，2岁以下儿童禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_03",
+          "group": "儿童",
+          "question": "我12岁感冒发热，可以吃阿司匹林肠溶片退烧吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.8748,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "赖氨匹林肠溶胶囊",
+              "section": "儿童用药",
+              "score": 0.8432,
+              "snippet": "一般12岁以下小儿慎用;3个月以下婴儿禁用."
+            },
+            {
+              "drug": "丁二酸洛沙平",
+              "section": "儿童用药",
+              "score": 0.8412,
+              "snippet": "16岁以下儿童禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_04",
+          "group": "儿童",
+          "question": "我8岁，能用奥美拉唑肠溶胶囊治胃痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "卡络磺钠",
+              "section": "儿童用药",
+              "score": 0.877,
+              "snippet": "5岁以上儿童同成人用量；5岁以下儿童用量减半"
+            },
+            {
+              "drug": "卡络磺钠片",
+              "section": "儿童用药",
+              "score": 0.877,
+              "snippet": "5岁以上儿童同成人用量；5岁以下儿童用量减半"
+            },
+            {
+              "drug": "林旦乳膏",
+              "section": "儿童用药",
+              "score": 0.876,
+              "snippet": "4岁以下婴幼儿禁用。4岁以上儿童应减量使用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_05",
+          "group": "儿童",
+          "question": "我15岁，能同时吃阿司匹林肠溶片和布洛芬胶囊止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.8463,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "萘普生钠颗粒",
+              "section": "儿童用药",
+              "score": 0.8457,
+              "snippet": "儿童慎用，2岁以下儿童禁用"
+            },
+            {
+              "drug": "丁二酸洛沙平",
+              "section": "儿童用药",
+              "score": 0.8413,
+              "snippet": "16岁以下儿童禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_06",
+          "group": "儿童",
+          "question": "我6岁咳嗽，能吃利巴韦林颗粒吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "利巴韦林颗粒"
+          ],
+          "top_evidence": [
+            {
+              "drug": "林旦乳膏",
+              "section": "儿童用药",
+              "score": 0.8705,
+              "snippet": "4岁以下婴幼儿禁用。4岁以上儿童应减量使用"
+            },
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.8633,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "萘普生钠颗粒",
+              "section": "儿童用药",
+              "score": 0.8627,
+              "snippet": "儿童慎用，2岁以下儿童禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_07",
+          "group": "儿童",
+          "question": "我10岁，有癫痫，能吃卡马西平片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "卡马西平片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.8633,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "萘普生钠颗粒",
+              "section": "儿童用药",
+              "score": 0.8627,
+              "snippet": "儿童慎用，2岁以下儿童禁用"
+            },
+            {
+              "drug": "升血调元汤",
+              "section": "儿童用药",
+              "score": 0.8584,
+              "snippet": "三岁以下儿童禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_08",
+          "group": "儿童",
+          "question": "我9岁，能用地高辛片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "萘普生钠颗粒",
+              "section": "儿童用药",
+              "score": 0.89,
+              "snippet": "儿童慎用，2岁以下儿童禁用"
+            },
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.8833,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "丁二酸洛沙平",
+              "section": "儿童用药",
+              "score": 0.8779,
+              "snippet": "16岁以下儿童禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_01",
+          "group": "成人",
+          "question": "我35岁，正在吃华法林钠片，能加阿司匹林肠溶片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "苦金片",
+              "section": "警告与注意事项",
+              "score": 0.6834,
+              "snippet": "1. 忌食辛辣油腻食物。2. 请将此药品放在儿童不能接触的地方。3. 如正在服用其他药物，使用本品前请咨询医师或药师"
+            },
+            {
+              "drug": "褪黑素胶囊",
+              "section": "警告与注意事项",
+              "score": 0.6827,
+              "snippet": "1.本品不能代替药物。2.请勿在从事驾驶、高空作业等危险操作前请勿使用"
+            },
+            {
+              "drug": "金奥力牌褪黑素胶囊",
+              "section": "警告与注意事项",
+              "score": 0.6827,
+              "snippet": "1.本品不能代替药物。2.请勿在从事驾驶、高空作业等危险操作前请勿使用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_02",
+          "group": "成人",
+          "question": "我40岁，吃华法林钠片期间能吃布洛芬胶囊止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "布洛芬胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "阿酚咖片",
+              "section": "老年用药",
+              "score": 0.7278,
+              "snippet": "50岁以后第一次发作偏头痛的患者,服用本品前请咨询医生"
+            },
+            {
+              "drug": "阿酚咖敏片",
+              "section": "警告与注意事项",
+              "score": 0.7077,
+              "snippet": "1.用药3-7天，症状未缓解，请咨询医师或药师。2.痛风、心功能不全、鼻出血、月经过多以及有溶血性贫血史者慎用。3.肝、肾功能不全者慎用。4.前列腺肥大、青光眼等患者以及老年人应在医师指导下使用。5.不能同时服用与本品成份相似的其他抗感冒药"
+            },
+            {
+              "drug": "阿酚咖敏片",
+              "section": "警告与注意事项",
+              "score": 0.7077,
+              "snippet": "1.用药3-7天，症状未缓解，请咨询医师或药师。。2.痛风、心功能不全、鼻出血、月经过多以及有溶血性贫血史者慎用。。3.肝、肾功能不全者慎用。。4.前列腺肥大、青光眼等患者以及老年人应在医师指导下使用。。5.不能同时服用与本品成份相似的其他"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_03",
+          "group": "成人",
+          "question": "我45岁，辛伐他汀片和克拉霉素片能一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "注射用甲磺酸左氧氟沙星",
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "复方明胶纤维",
+              "section": "药物相互作用",
+              "score": 0.6893,
+              "snippet": "如与其他药物同时使用可能会发生药物相互作用，详情请咨询医师或药师"
+            },
+            {
+              "drug": "复方曲安奈德乳膏",
+              "section": "药物相互作用",
+              "score": 0.6893,
+              "snippet": "如与其他药物同时使用可能会发生药物相互作用，详情请咨询医师或药师"
+            },
+            {
+              "drug": "复方杏香兔耳风片",
+              "section": "药物相互作用",
+              "score": 0.6893,
+              "snippet": "如与其他药物同时使用可能会发生药物相互作用，详情请咨询医师或药师"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_04",
+          "group": "成人",
+          "question": "我50岁，硫酸氢氯吡格雷片和奥美拉唑肠溶胶囊能同服吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊",
+            "硫酸氢氯吡格雷片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "复方桔梗麻黄碱糖浆Ⅱ",
+              "section": "用法用量",
+              "score": 0.6267,
+              "snippet": "口服，用小杯量取，2至5岁一次1格(5毫升)，2岁以下酌情递减，5岁以上一次1?～2格(5～10毫升)，一日3～4次"
+            },
+            {
+              "drug": "小儿止咳糖浆",
+              "section": "用法用量",
+              "score": 0.6267,
+              "snippet": "口服，用小杯量取，2至5岁一次1格(5毫升)，2岁以下酌情递减，5岁以上一次1?～2格(5～10毫升)，一日3～4次"
+            },
+            {
+              "drug": "小儿泻痢片",
+              "section": "用法用量",
+              "score": 0.6243,
+              "snippet": "口服，一岁以下1片，二至三岁2～3片，四岁以上4～6片，一日4次"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_05",
+          "group": "成人",
+          "question": "我38岁，甲氨蝶呤片治疗期间可以吃布洛芬胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "methotrexate",
+            "布洛芬胶囊",
+            "甲氨蝶呤片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "甲氨蝶呤注射液",
+              "section": "药物相互作用",
+              "score": 0.7562,
+              "snippet": "甲氨蝶呤增加了巯嘌呤的血浆浓度。因此巯嘌呤与甲氨蝶呤联用时可能需要调整用药剂量。有报道一些银屑病或蕈样霉菌病（一种皮肤T淋巴细胞瘤）的患者接受甲氨蝶呤加PUVA治疗（甲氧沙林和紫外线照射）后患皮肤癌。当红细胞浓缩液和甲氨蝶呤同时给予时应小心"
+            },
+            {
+              "drug": "甲氨蝶呤注射液",
+              "section": "药物相互作用",
+              "score": 0.7562,
+              "snippet": "甲氨蝶呤增加了巯嘌呤的血浆浓度。因此巯嘌呤与甲氨蝶呤联用时可能需要调整用药剂量。有报道一些银屑病或蕈样霉菌病（一种皮肤T淋巴细胞瘤）的患者接受甲氨蝶呤加PUVA治疗（甲氧沙林和紫外线照射）后患皮肤癌。当红细胞浓缩液和甲氨蝶呤同时给予时应小心"
+            },
+            {
+              "drug": "格列齐特缓释片",
+              "section": "老年用药",
+              "score": 0.7365,
+              "snippet": "对65 岁以上患者，格列齐特缓释片的服法按65 岁以下患者相同治疗方案，或遵医嘱"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_06",
+          "group": "成人",
+          "question": "我30岁，卡马西平片和克拉霉素片可以一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "卡马西平片",
+            "注射用甲磺酸左氧氟沙星"
+          ],
+          "top_evidence": [
+            {
+              "drug": "小儿清肺化痰泡腾片",
+              "section": "用法用量",
+              "score": 0.7108,
+              "snippet": "用温开水溶解后服用，周岁以下一次1片，1~5岁一次2片，5岁以上一次3~4片，一日2~3次"
+            },
+            {
+              "drug": "童宝乐片",
+              "section": "用法用量",
+              "score": 0.7076,
+              "snippet": "嚼服，7岁以上一次10片，3～7岁一次5～10片，3岁以下一次3～5片，一日2次"
+            },
+            {
+              "drug": "小儿清肺止咳片",
+              "section": "用法用量",
+              "score": 0.7054,
+              "snippet": "口服。周岁以内一次1～2片，1～3岁一次2～3片，3岁以上一次3～5片，一日2次"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_07",
+          "group": "成人",
+          "question": "我42岁，地高辛片和奥美拉唑肠溶胶囊可以同服吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片",
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "双扑伪麻分散片",
+              "section": "儿童用药",
+              "score": 0.756,
+              "snippet": "1.2-5岁，一次2片。。2.6-11岁，一次4片。。3.12岁以上儿童及成人每次4-6片"
+            },
+            {
+              "drug": "阿司匹林维生素C泡腾片",
+              "section": "用法用量",
+              "score": 0.6536,
+              "snippet": "口服： 1. 成人一次1片，若发热或疼痛不缓解可间隔4-6小时重复用药1次，24小时不超过4片。2. 儿童2-3岁一次1/3片，4-6岁一次1/2片，6-10岁2/3片，10岁以上一次1片。可将本品溶于适量温开水中后服用"
+            },
+            {
+              "drug": "阿司匹林维生素C泡腾片",
+              "section": "用法用量",
+              "score": 0.6536,
+              "snippet": "口服：。1. 成人一次1片，若发热或疼痛不缓解可间隔4-6小时重复用药1次，24小时不超过4片。。2. 儿童2-3岁一次1/3片，4-6岁一次1/2片，6-10岁2/3片，10岁以上一次1片。可将本品溶于适量温开水中后服用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_08",
+          "group": "成人",
+          "question": "我36岁，螺内酯片和布洛芬胶囊能一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊",
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "小儿消咳片",
+              "section": "用法用量",
+              "score": 0.6845,
+              "snippet": "口服，六个月至一岁小儿一次 0.5片；一至四岁一次 1片；三岁以上一次 2片；一日 3次"
+            },
+            {
+              "drug": "香苏调胃片",
+              "section": "用法用量",
+              "score": 0.6831,
+              "snippet": "口服。周岁以内一次1～2片，一岁至三岁一次2～3片，三岁以上一次3～5片，一日2次，温开水送下"
+            },
+            {
+              "drug": "健脾生血片",
+              "section": "用法用量",
+              "score": 0.6817,
+              "snippet": "饭后口服。成人一次3片；一岁以内一次0.5片；一至三岁一次1片；三至五岁一次1.5片；五至十二岁一次片"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_01",
+          "group": "孕妇",
+          "question": "我怀孕8周，能吃华法林钠片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "筋伤宁湿敷剂",
+              "section": "禁忌",
+              "score": 0.784,
+              "snippet": "孕妇、幼儿禁用"
+            },
+            {
+              "drug": "关节止痛膏",
+              "section": "禁忌",
+              "score": 0.767,
+              "snippet": "孕妇禁用"
+            },
+            {
+              "drug": "关节镇痛膏",
+              "section": "禁忌",
+              "score": 0.767,
+              "snippet": "孕妇禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_02",
+          "group": "孕妇",
+          "question": "我孕中期感冒，能吃利巴韦林颗粒吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "利巴韦林颗粒"
+          ],
+          "top_evidence": [
+            {
+              "drug": "妇阴舒泡腾片",
+              "section": "禁忌",
+              "score": 0.7898,
+              "snippet": "孕妇、经期禁用"
+            },
+            {
+              "drug": "丁咯地尔片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7746,
+              "snippet": "孕妇（尤其是妊娠三个月孕妇）及哺乳期妇女禁用"
+            },
+            {
+              "drug": "盐酸丁咯地尔片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7746,
+              "snippet": "孕妇（尤其是妊娠三个月孕妇）及哺乳期妇女禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_03",
+          "group": "孕妇",
+          "question": "我怀孕了，能继续吃辛伐他汀片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "肾骨胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7701,
+              "snippet": "孕妇慎用"
+            },
+            {
+              "drug": "肿痛安胶囊",
+              "section": "警告与注意事项",
+              "score": 0.7701,
+              "snippet": "孕妇慎用"
+            },
+            {
+              "drug": "肿痛安胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7701,
+              "snippet": "孕妇慎用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_04",
+          "group": "孕妇",
+          "question": "我备孕期间长痘，能吃异维A酸软胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "异维A酸软胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "异维A酸软胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.9651,
+              "snippet": "孕妇、哺乳期妇女禁用。育龄妇女或其配偶服药前后三个月与服药期间应严格避孕，万勿妊娠"
+            },
+            {
+              "drug": "妇阴舒泡腾片",
+              "section": "禁忌",
+              "score": 0.7949,
+              "snippet": "孕妇、经期禁用"
+            },
+            {
+              "drug": "异维A酸胶丸",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7851,
+              "snippet": "孕妇、哺乳期妇女禁用。育龄妇女或其配偶服药前后三个月与服药期间应严格避孕，万勿妊娠"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_05",
+          "group": "孕妇",
+          "question": "我怀孕期间牙疼，可以吃布洛芬胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "妇阴舒泡腾片",
+              "section": "禁忌",
+              "score": 0.8215,
+              "snippet": "孕妇、经期禁用"
+            },
+            {
+              "drug": "百草妇炎清栓",
+              "section": "禁忌",
+              "score": 0.8113,
+              "snippet": "孕妇、月经期间禁用"
+            },
+            {
+              "drug": "异维A酸胶丸",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7902,
+              "snippet": "孕妇、哺乳期妇女禁用。育龄妇女或其配偶服药前后三个月与服药期间应严格避孕，万勿妊娠"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_06",
+          "group": "孕妇",
+          "question": "我怀孕期间感染，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "肾骨胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7491,
+              "snippet": "孕妇慎用"
+            },
+            {
+              "drug": "肿痛安胶囊",
+              "section": "警告与注意事项",
+              "score": 0.7491,
+              "snippet": "孕妇慎用"
+            },
+            {
+              "drug": "肿痛安胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7491,
+              "snippet": "孕妇慎用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_07",
+          "group": "孕妇",
+          "question": "我怀孕期间胃痛，可以吃奥美拉唑肠溶胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "妇阴舒泡腾片",
+              "section": "禁忌",
+              "score": 0.8023,
+              "snippet": "孕妇、经期禁用"
+            },
+            {
+              "drug": "百草妇炎清栓",
+              "section": "禁忌",
+              "score": 0.7932,
+              "snippet": "孕妇、月经期间禁用"
+            },
+            {
+              "drug": "养血补肾丸",
+              "section": "禁忌",
+              "score": 0.7826,
+              "snippet": "孕妇、糖尿病患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_08",
+          "group": "孕妇",
+          "question": "我怀孕期间能吃甲氨蝶呤片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "methotrexate",
+            "甲氨蝶呤片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "肾骨胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7701,
+              "snippet": "孕妇慎用"
+            },
+            {
+              "drug": "肿痛安胶囊",
+              "section": "警告与注意事项",
+              "score": 0.7701,
+              "snippet": "孕妇慎用"
+            },
+            {
+              "drug": "肿痛安胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.7701,
+              "snippet": "孕妇慎用"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_01",
+          "group": "老年人",
+          "question": "我70岁，正在吃华法林钠片，能加阿司匹林肠溶片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.7685,
+              "snippet": "老年人（≥65岁）平均AUC相对于年轻成人约增高35%-60%，女性AUC较男性AUC高15%-20%。但头孢丙烯药代动力学在年龄?性别间差异不足以说明有调整剂量的必要"
+            },
+            {
+              "drug": "六甲密胺片",
+              "section": "老年用药",
+              "score": 0.76,
+              "snippet": "老年65岁老年患者酌情减量"
+            },
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.7555,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_02",
+          "group": "老年人",
+          "question": "我78岁糖尿病，能吃盐酸二甲双胍片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "盐酸二甲双胍片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.7631,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.7631,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "注射用甲磺酸帕珠沙星",
+              "section": "老年用药",
+              "score": 0.7559,
+              "snippet": "老年患者用药监测血药浓度、尿排泄量时，Cmax、AUC升高，尿中回收率下降，因此老年患者应用本品时应注意剂量"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_03",
+          "group": "老年人",
+          "question": "我72岁，地高辛片和螺内酯片能一起用吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片",
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.78,
+              "snippet": "老年人（≥65岁）平均AUC相对于年轻成人约增高35%-60%，女性AUC较男性AUC高15%-20%。但头孢丙烯药代动力学在年龄?性别间差异不足以说明有调整剂量的必要"
+            },
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.7752,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.7752,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_04",
+          "group": "老年人",
+          "question": "我68岁，吃辛伐他汀片期间能用克拉霉素片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "注射用甲磺酸帕珠沙星",
+              "section": "老年用药",
+              "score": 0.7671,
+              "snippet": "老年患者用药监测血药浓度、尿排泄量时，Cmax、AUC升高，尿中回收率下降，因此老年患者应用本品时应注意剂量"
+            },
+            {
+              "drug": "甲磺酸帕珠沙星",
+              "section": "老年用药",
+              "score": 0.7671,
+              "snippet": "老年患者用药监测血药浓度、尿排泄量时，Cmax，AUC升高，尿中回收率下降，因此老年患者应用本品时应注意剂量"
+            },
+            {
+              "drug": "甲磺酸帕珠沙星氯化钠注射液",
+              "section": "老年用药",
+              "score": 0.7671,
+              "snippet": "老年患者用药监测血药浓度、尿排泄量时，Cmax、AUC升高，尿中回收率下降，因此老年患者应用本品时应注意剂量"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_05",
+          "group": "老年人",
+          "question": "我80岁肾功能不好，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "氧氟沙星片",
+              "section": "用法用量",
+              "score": 0.8613,
+              "snippet": "1.本品宜饭后吞服，不宜掰开，压碎或咀嚼药片。2.成人常用剂量： (1)肾功能减退：对肾功能减退的老年患者(肌酐清除率≤50ml/min)需根据肾功能调整给药剂量。(2)肝功能损害：严重肝功能损害患者氧氟沙星肝脏消除减慢,因此每日最大剂量不"
+            },
+            {
+              "drug": "氟康唑颗粒",
+              "section": "老年用药",
+              "score": 0.8316,
+              "snippet": "根据老年患者肾功能情况调整剂量"
+            },
+            {
+              "drug": "阿莫西林咀嚼片",
+              "section": "老年用药",
+              "score": 0.8119,
+              "snippet": "老年人和肾功能严重损害时可能须调整剂量"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_06",
+          "group": "老年人",
+          "question": "我75岁，能用螺内酯片治疗水肿吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢他啶",
+              "section": "老年用药",
+              "score": 0.7757,
+              "snippet": "65岁以上老年患者剂量可减至正常剂量的2/3～1/2，一日最高剂量不超过3g"
+            },
+            {
+              "drug": "注射用头孢他啶",
+              "section": "老年用药",
+              "score": 0.7757,
+              "snippet": "65岁以上老年患者剂量可减至正常剂量的2/3～1/2，一日最高剂量不超过3g"
+            },
+            {
+              "drug": "萘普生片",
+              "section": "老年用药",
+              "score": 0.7757,
+              "snippet": "65岁以上老年患者剂量可减至正常剂量的2/3～1/2，一日最高剂量不超过3g"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_07",
+          "group": "老年人",
+          "question": "我73岁，吃卡马西平片安全吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "卡马西平片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.7811,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.7811,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯分散片",
+              "section": "老年用药",
+              "score": 0.7719,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20-40成人相比，AUC升高35％～60％，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_08",
+          "group": "老年人",
+          "question": "我76岁，能吃对乙酰氨基酚片止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": false,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "对乙酰氨基酚片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.7811,
+              "snippet": "老年人（≥65岁）平均AUC相对于年轻成人约增高35%-60%，女性AUC较男性AUC高15%-20%。但头孢丙烯药代动力学在年龄?性别间差异不足以说明有调整剂量的必要"
+            },
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.7741,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.7741,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Baseline B: Chroma + BM25",
+      "total_cases": 32,
+      "elapsed_seconds": 280.12,
+      "high_risk_accuracy": 0.7812,
+      "evidence_recall_hit_rate": 1.0,
+      "unknown_rate": 0.0,
+      "fallback_rate": 0.0,
+      "risk_distribution": {
+        "High": 25,
+        "Low": 2,
+        "Medium": 5
+      },
+      "by_group": {
+        "儿童": {
+          "total_cases": 8,
+          "high_risk_accuracy": 1.0,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.0
+        },
+        "成人": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.75,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.0
+        },
+        "孕妇": {
+          "total_cases": 8,
+          "high_risk_accuracy": 1.0,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.0
+        },
+        "老年人": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.375,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.0
+        }
+      },
+      "cases": [
+        {
+          "case_id": "child_01",
+          "group": "儿童",
+          "question": "我7岁，发烧了，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "左氧氟沙星片",
+              "section": "药理毒理",
+              "score": 0.0526,
+              "snippet": "左氧氟沙星是消旋体氧氟沙星的光学活性部分（左旋体），具有约2倍于氧氟沙星的抗菌活性。作用机制：左氧氟沙星的主要作用机制是阻碍DNA旋转酶的活性，其强度为氧氟沙星的2倍。其最小抑菌浓度（MIC）与最低杀菌浓度（MBC）无显著差异，其作用为杀菌"
+            },
+            {
+              "drug": "左氧氟沙星片",
+              "section": "儿童用药",
+              "score": 0.0464,
+              "snippet": "品在婴幼儿及18岁以下青少年的安全性尚未确定。但本品用于数种幼龄动物时，可致关节病变。因此不宜用于18岁以下的小儿及青少年"
+            },
+            {
+              "drug": "氧氟沙星片",
+              "section": "儿童用药",
+              "score": 0.0452,
+              "snippet": "品在婴幼儿及18岁以下青少年的安全性尚未确定。但本品用于数种幼龄动物时，可致关节病变。因此不宜用于18岁以下的小儿及青少年"
+            }
+          ]
+        },
+        {
+          "case_id": "child_02",
+          "group": "儿童",
+          "question": "我3岁，家里只有对乙酰氨基酚片，能直接吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "对乙酰氨基酚片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "儿童用药",
+              "score": 0.0464,
+              "snippet": "3岁以下儿童因肝、肾功能发育不全，应避免使用"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "用法用量",
+              "score": 0.0441,
+              "snippet": "口服。1.6～12岁儿童，一次0.5片。2.12岁以上儿童及成人一次1片，若持续发热或疼痛，可间隔4-6小时重复用药一次，24小时内不得超过4次"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "用法用量",
+              "score": 0.0439,
+              "snippet": "口服。。1.6～12岁儿童，一次0.5片。。2.12岁以上儿童及成人一次1片，若持续发热或疼痛，可间隔4-6小时重复用药一次，24小时内不得超过4次"
+            }
+          ]
+        },
+        {
+          "case_id": "child_03",
+          "group": "儿童",
+          "question": "我12岁感冒发热，可以吃阿司匹林肠溶片退烧吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "赖氨匹林肠溶胶囊",
+              "section": "儿童用药",
+              "score": 0.0525,
+              "snippet": "一般12岁以下小儿慎用;3个月以下婴儿禁用."
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "儿童用药",
+              "score": 0.0441,
+              "snippet": "如未咨询医生，含有阿司匹林的药物不应用于儿童和青少年的伴或不伴发热的病毒感染。某种病毒性疾病，尤其是流感A，B和水痘，可能会发生少见的危及生命的Reye综合征，需立即进行药物治疗。合并应用阿司匹林时发生Reye综合征的风险可能增加，但相关性"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "适应症",
+              "score": 0.0437,
+              "snippet": "用于普通感冒或流行性感冒引起的发热，也用于缓解轻至中度疼痛如头痛、关节痛、偏头痛、牙痛、肌肉痛、神经痛、痛经"
+            }
+          ]
+        },
+        {
+          "case_id": "child_04",
+          "group": "儿童",
+          "question": "我8岁，能用奥美拉唑肠溶胶囊治胃痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "儿童用药",
+              "score": 0.0464,
+              "snippet": "尚无儿童用药经验，婴幼儿禁用"
+            },
+            {
+              "drug": "奥美拉唑",
+              "section": "禁忌",
+              "score": 0.0461,
+              "snippet": "婴幼儿、严重肾功能不全者、过敏者禁用奥美拉唑。肾功能不全者，应该慎用"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "禁忌",
+              "score": 0.0459,
+              "snippet": "对本品过敏者、严重肾功能不全者及婴幼儿禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_05",
+          "group": "儿童",
+          "question": "我15岁，能同时吃阿司匹林肠溶片和布洛芬胶囊止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "布洛芬胶囊",
+              "section": "禁忌",
+              "score": 0.0456,
+              "snippet": "1.对其他非甾体抗炎药过敏者禁用。2.孕妇及哺乳期妇女禁用。3.对阿司匹林过敏的哮喘患者禁用"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "儿童用药",
+              "score": 0.0432,
+              "snippet": "儿童必须在成人监护下使用"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "禁忌",
+              "score": 0.0419,
+              "snippet": "1.孕妇、哺乳期妇女禁用。2.哮喘、鼻息肉综合征、对阿司匹林和其他解热镇痛药过敏者禁用。3.血友病或血小板减少症、溃疡病活动期患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_06",
+          "group": "儿童",
+          "question": "我6岁咳嗽，能吃利巴韦林颗粒吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "利巴韦林颗粒"
+          ],
+          "top_evidence": [
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "警告与注意事项",
+              "score": 0.0548,
+              "snippet": "尽早用药，呼吸道合胞病毒性肺炎病初3日内给药，利巴韦林不宜用于未经实验室确诊为呼吸道合胞病毒感染的患者。在老年患者中使用利巴韦林发生贫血的可能性大于年轻患者，老年人肾功能多有下降，容易导致蓄积，不推荐老年患者服用利巴韦林。"
+            },
+            {
+              "drug": "林旦乳膏",
+              "section": "儿童用药",
+              "score": 0.0501,
+              "snippet": "4岁以下婴幼儿禁用。4岁以上儿童应减量使用"
+            },
+            {
+              "drug": "萘普生钠颗粒",
+              "section": "儿童用药",
+              "score": 0.0467,
+              "snippet": "儿童慎用，2岁以下儿童禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_07",
+          "group": "儿童",
+          "question": "我10岁，有癫痫，能吃卡马西平片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "卡马西平片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "卡马西平片",
+              "section": "药物相互作用",
+              "score": 0.0568,
+              "snippet": "锂盐可以降低卡马西平的抗利尿作用。卡马西平(与三环类抗抑郁药结构相似)与单胺氧化酶(MAO)抑制合用，可引起高热或(和)高血压危象，严重惊厥甚至死亡，两药应用至少要间隔14天。当卡马西平用作抗惊厥剂时，MAO抑制药可以改变癫痫发作的类型。若"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "用法用量",
+              "score": 0.0456,
+              "snippet": "成人 初始剂量每次100-200mg（半片-1片），每天1-2次。逐渐增加剂量直至最佳疗效[通常为每次400mg（2片），每天2-3次]。某些病人需加至每天1600mg（8片），甚至每天2000mg（10片）。儿童 每天10-20mg/kg"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "儿童用药",
+              "score": 0.0454,
+              "snippet": "尚不明确"
+            }
+          ]
+        },
+        {
+          "case_id": "child_08",
+          "group": "儿童",
+          "question": "我9岁，能用地高辛片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "地拉罗司分散片",
+              "section": "儿童用药",
+              "score": 0.0511,
+              "snippet": "6岁以下儿童慎用恩瑞格。2岁以下儿童不宜使用"
+            },
+            {
+              "drug": "地高辛片",
+              "section": "用法用量",
+              "score": 0.0435,
+              "snippet": "1.成人常用量口服：。(1)常用0.125~0.5mg，每日－次，7天可达稳态血药浓度；。(2)若达快速负荷量，可每6~8小时给药0.25,mg，总剂量0.75~1.25mg／日；维持量，每日－次0.125~0.5mg。。2.小儿常用量口服"
+            },
+            {
+              "drug": "富马酸氯马斯汀口服溶液",
+              "section": "儿童用药",
+              "score": 0.0164,
+              "snippet": "1.儿童(6岁以下)：须在医生指导下使用。。2.新生儿、早产儿禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_01",
+          "group": "成人",
+          "question": "我35岁，正在吃华法林钠片，能加阿司匹林肠溶片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "药理毒理",
+              "score": 0.0464,
+              "snippet": "本品能抑制前列腺素合成，具有解热、镇痛作用"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "老年用药",
+              "score": 0.0461,
+              "snippet": "老年用药请参见【注意事项】，使用前咨询医生"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "禁忌",
+              "score": 0.0454,
+              "snippet": "1.孕妇、哺乳期妇女禁用。2.哮喘、鼻息肉综合征、对阿司匹林和其他解热镇痛药过敏者禁用。3.血友病或血小板减少症、溃疡病活动期患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_02",
+          "group": "成人",
+          "question": "我40岁，吃华法林钠片期间能吃布洛芬胶囊止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "布洛芬胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "华法林钠片",
+              "section": "药代动力学",
+              "score": 0.0464,
+              "snippet": "1.口服华法林钠的生物利用度＞90%，在3至9小时达血浆峰浓度。同时进食华法林的吸收延缓但不减少其吸收量。存在肝肠循环。2.华法林钠与血蛋白大量结合，游离华法林为0.5%～3%。表观分布容积约为0.14公升/公斤。3.华法林钠可透过胎盘，但"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "药代动力学",
+              "score": 0.0461,
+              "snippet": "1.口服华法林钠的生物利用度＞90%，在3至9小时达血浆峰浓度。同时进食华法林的吸收延缓但不减少其吸收量。存在肝肠循环。。2.华法林钠与血蛋白大量结合，游离华法林为0.5%～3%。表观分布容积约为0.14公升/公斤。。3.华法林钠可透过胎盘"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "儿童用药",
+              "score": 0.0459,
+              "snippet": "尚不明确"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_03",
+          "group": "成人",
+          "question": "我45岁，辛伐他汀片和克拉霉素片能一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "注射用甲磺酸左氧氟沙星",
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "辛伐他汀片",
+              "section": "药物相互作用",
+              "score": 0.0625,
+              "snippet": "当辛伐他汀与其他在治疗剂量下对细胞色素P450。A4有明显抑制作用的药物(如:环孢霉素、米贝地尔、伊曲康唑、酮康唑、红霉素、克拉霉素和奈法唑酮)或纤维酸类衍生物或烟酸合用时，导致横纹肌溶解的危险性增高。"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "用法用量",
+              "score": 0.054,
+              "snippet": "纯合子家族性高胆固醇血症:根据对照临床研究结果，对纯合子家族性高胆固醇血症病人，建议辛伐他汀40m（即2片），晚间顿服，或80mg（即4片），分早晨20mg（即1片）?午间20mg（即1片）和晚间40mg（即2片）三次服用。辛伐他汀应与其他"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "用法用量",
+              "score": 0.0534,
+              "snippet": "协同治疗:辛伐他汀单独应用或与胆酸螯合剂协同应用时均有效。对于已同时服用免疫抑制剂类药物的患者，辛伐他汀的推荐剂量为每天10mg（即1/2片）。肾功能不全:由于辛伐他汀由肾脏排泄不明显，故中度肾功能不全病人不必调整剂量;对于严重肾功能不全的"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_04",
+          "group": "成人",
+          "question": "我50岁，硫酸氢氯吡格雷片和奥美拉唑肠溶胶囊能同服吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊",
+            "硫酸氢氯吡格雷片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "老年用药",
+              "score": 0.0464,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "适应症",
+              "score": 0.0461,
+              "snippet": "用于胃酸过多引起的烧心和反酸症状的短期缓解"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "儿童用药",
+              "score": 0.0459,
+              "snippet": "尚无儿童用药经验，婴幼儿禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_05",
+          "group": "成人",
+          "question": "我38岁，甲氨蝶呤片治疗期间可以吃布洛芬胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "methotrexate",
+            "布洛芬胶囊",
+            "甲氨蝶呤片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "甲氨蝶呤注射液",
+              "section": "药物相互作用",
+              "score": 0.0817,
+              "snippet": "甲氨蝶呤增加了巯嘌呤的血浆浓度。因此巯嘌呤与甲氨蝶呤联用时可能需要调整用药剂量。有报道一些银屑病或蕈样霉菌病（一种皮肤T淋巴细胞瘤）的患者接受甲氨蝶呤加PUVA治疗（甲氧沙林和紫外线照射）后患皮肤癌。当红细胞浓缩液和甲氨蝶呤同时给予时应小心"
+            },
+            {
+              "drug": "甲氨蝶呤注射液",
+              "section": "药物相互作用",
+              "score": 0.0803,
+              "snippet": "已有报道甲氨蝶呤（通常大剂量用药）与某些NSAIDs包括阿司匹林和其它水杨酸盐、阿扎丙宗、二氯芬酸、吲哚美辛和酮洛芬同时给药时出现未预知的严重的（有时为致命的）骨髓抑制和胃肠道毒性。已有报道甲氧萘丙酸不会影响甲氨蝶呤的药代动力学，但是曾报道"
+            },
+            {
+              "drug": "甲氨蝶呤注射液",
+              "section": "药物相互作用",
+              "score": 0.0757,
+              "snippet": "在骨肉瘤患者的治疗中，如果大剂量甲氨蝶呤与有潜在肾毒性的化疗药物（如顺铂）联用，需要慎重。口服抗生素例如四环素、氯霉素和不能吸收的广谱抗生素可能通过抑制肠道菌群和通过细菌抑制药物代谢，从而降低甲氨蝶呤肠道吸收或干扰肠肝循环。有报道使用门冬酰"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_06",
+          "group": "成人",
+          "question": "我30岁，卡马西平片和克拉霉素片可以一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "卡马西平片",
+            "注射用甲磺酸左氧氟沙星"
+          ],
+          "top_evidence": [
+            {
+              "drug": "卡马西平片",
+              "section": "药物相互作用",
+              "score": 0.0625,
+              "snippet": "与含雌激素的避孕药，环孢素，洋地黄类(可能地高辛除外)，雌激素，左旋甲状腺素或奎尼丁合用时，由于卡马西平对肝药酶的诱导，这些药的效应都会降低，用量应作调整，改用仅含孕激素(黄体酮)的口服避孕药。与口服避孕药合用可能出现阴道大出血。与多西环素"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "药物相互作用",
+              "score": 0.061,
+              "snippet": "锂盐可以降低卡马西平的抗利尿作用。卡马西平(与三环类抗抑郁药结构相似)与单胺氧化酶(MAO)抑制合用，可引起高热或(和)高血压危象，严重惊厥甚至死亡，两药应用至少要间隔14天。当卡马西平用作抗惊厥剂时，MAO抑制药可以改变癫痫发作的类型。若"
+            },
+            {
+              "drug": "注射用甲磺酸左氧氟沙星",
+              "section": "儿童用药",
+              "score": 0.0445,
+              "snippet": "18岁以下患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_07",
+          "group": "成人",
+          "question": "我42岁，地高辛片和奥美拉唑肠溶胶囊可以同服吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片",
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "老年用药",
+              "score": 0.0464,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "儿童用药",
+              "score": 0.0461,
+              "snippet": "尚无儿童用药经验，婴幼儿禁用"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "适应症",
+              "score": 0.0459,
+              "snippet": "用于胃酸过多引起的烧心和反酸症状的短期缓解"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_08",
+          "group": "成人",
+          "question": "我36岁，螺内酯片和布洛芬胶囊能一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊",
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "布洛芬胶囊",
+              "section": "儿童用药",
+              "score": 0.0464,
+              "snippet": "儿童必须在成人监护下使用"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0461,
+              "snippet": "孕妇及哺乳期妇女禁用"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "药代动力学",
+              "score": 0.0459,
+              "snippet": "未进行该项研究且暂无可靠文献参考"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_01",
+          "group": "孕妇",
+          "question": "我怀孕8周，能吃华法林钠片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "华法林钠片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0464,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0461,
+              "snippet": "1. 易通过胎盘并致畸胎.妊娠期使用本品可致\\\"胎儿华法林综合征，发生率可达5%～。0%.表现为骨骺分离?鼻发育不全?视神经萎缩?智力迟纯，心?肝?脾?胃肠道?头部等畸形.妊娠后期应用可致出血和死胎，故妊娠早期2个月及妊娠后期。个月禁用本品"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0459,
+              "snippet": "1. 易通过胎盘并致畸胎.妊娠期使用本品可致\\\"胎儿华法林综合征，发生率可达5%～。0%.表现为骨骺分离?鼻发育不全?视神经萎缩?智力迟纯，心?肝?脾?胃肠道?头部等畸形.妊娠后期应用可致出血和死胎，故妊娠早期2个月及妊娠后期。个月禁用本品"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_02",
+          "group": "孕妇",
+          "question": "我孕中期感冒，能吃利巴韦林颗粒吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "利巴韦林颗粒"
+          ],
+          "top_evidence": [
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "警告与注意事项",
+              "score": 0.0596,
+              "snippet": "尽早用药，呼吸道合胞病毒性肺炎病初3日内给药，利巴韦林不宜用于未经实验室确诊为呼吸道合胞病毒感染的患者。在老年患者中使用利巴韦林发生贫血的可能性大于年轻患者，老年人肾功能多有下降，容易导致蓄积，不推荐老年患者服用利巴韦林。"
+            },
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "警告与注意事项",
+              "score": 0.0568,
+              "snippet": "定期进行血常规（血红蛋白水平、白细胞计数、血小板计数）、血液生化（肝功能、TSH）检查，尤其血红蛋白检查（包括在开始前、治疗第2周、第4周）。对可能怀孕妇女每月进行怀孕测试。严重贫血患者慎用，有地中海贫血、镰刀细胞性贫血患者不推荐使用利巴韦"
+            },
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "药理毒理",
+              "score": 0.0555,
+              "snippet": "药理作用:利巴韦林为合成的核苷类抗病毒药。体外细胞培养试验表明，利巴韦林对呼吸道合胞病毒（RSV）具有选择性的抑制作用。利巴韦林的作用机理尚不清楚，但是其体外抗病毒活性可被鸟嘌呤核苷和黄嘌呤核苷逆转的结果提示，利巴韦林可能作为这些细胞的代谢"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_03",
+          "group": "孕妇",
+          "question": "我怀孕了，能继续吃辛伐他汀片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "辛伐他汀片",
+              "section": "用法用量",
+              "score": 0.0548,
+              "snippet": "协同治疗:辛伐他汀单独应用或与胆酸螯合剂协同应用时均有效。对于已同时服用免疫抑制剂类药物的患者，辛伐他汀的推荐剂量为每天10mg（即1/2片）。肾功能不全:由于辛伐他汀由肾脏排泄不明显，故中度肾功能不全病人不必调整剂量;对于严重肾功能不全的"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0464,
+              "snippet": "1.妊娠期妇女 妊娠期妇女禁用本品。尚未有妊娠期妇女服用辛伐他汀的安全性数据。在妊娠妇女中尚未进行辛伐他汀的对照临床试验。由于在孕期使用HMG-CoA而导致的先天缺陷也很少有报道。但是，在对大约200名孕期的前三个月使用过辛伐他汀或其他密切"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0461,
+              "snippet": "1.妊娠期妇女。妊娠期妇女禁用本品。。尚未有妊娠期妇女服用辛伐他汀的安全性数据。在妊娠妇女中尚未进行辛伐他汀的对照临床试验。由于在孕期使用HMG-CoA而导致的先天缺陷也很少有报道。但是，在对大约200名孕期的前三个月使用过辛伐他汀或其他密"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_04",
+          "group": "孕妇",
+          "question": "我备孕期间长痘，能吃异维A酸软胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "异维A酸软胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "异维A酸软胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0828,
+              "snippet": "孕妇、哺乳期妇女禁用。育龄妇女或其配偶服药前后三个月与服药期间应严格避孕，万勿妊娠"
+            },
+            {
+              "drug": "异维A酸胶丸",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0517,
+              "snippet": "孕妇、哺乳期妇女禁用。育龄妇女或其配偶服药前后三个月与服药期间应严格避孕，万勿妊娠"
+            },
+            {
+              "drug": "异维A酸软胶囊",
+              "section": "禁忌",
+              "score": 0.0461,
+              "snippet": "孕妇，哺乳期妇女，肝肾功能不全，维生素A过量及高血脂症患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_05",
+          "group": "孕妇",
+          "question": "我怀孕期间牙疼，可以吃布洛芬胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "布洛芬胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0464,
+              "snippet": "孕妇及哺乳期妇女禁用"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "禁忌",
+              "score": 0.0459,
+              "snippet": "1.对其他非甾体抗炎药过敏者禁用。2.孕妇及哺乳期妇女禁用。3.对阿司匹林过敏的哮喘患者禁用"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "儿童用药",
+              "score": 0.0449,
+              "snippet": "儿童必须在成人监护下使用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_06",
+          "group": "孕妇",
+          "question": "我怀孕期间感染，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "左氧氟沙星片",
+              "section": "药理毒理",
+              "score": 0.0584,
+              "snippet": "左氧氟沙星是消旋体氧氟沙星的光学活性部分（左旋体），具有约2倍于氧氟沙星的抗菌活性。作用机制：左氧氟沙星的主要作用机制是阻碍DNA旋转酶的活性，其强度为氧氟沙星的2倍。其最小抑菌浓度（MIC）与最低杀菌浓度（MBC）无显著差异，其作用为杀菌"
+            },
+            {
+              "drug": "左氧氟沙星片",
+              "section": "禁忌",
+              "score": 0.0456,
+              "snippet": "对喹诺酮类药物过敏者?孕妇及哺乳期妇女?18岁以下患者禁用"
+            },
+            {
+              "drug": "氧氟沙星片",
+              "section": "禁忌",
+              "score": 0.0433,
+              "snippet": "对喹诺酮类药物过敏者?孕妇及哺乳期妇女?18岁以下患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_07",
+          "group": "孕妇",
+          "question": "我怀孕期间胃痛，可以吃奥美拉唑肠溶胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "老年用药",
+              "score": 0.0459,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0456,
+              "snippet": "虽然动物实验表明，本品无胎儿毒性或致畸作用，但对孕妇一般不用，对哺乳期妇女也应慎用"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "儿童用药",
+              "score": 0.0454,
+              "snippet": "尚无儿童用药经验，婴幼儿禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_08",
+          "group": "孕妇",
+          "question": "我怀孕期间能吃甲氨蝶呤片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "methotrexate",
+            "甲氨蝶呤片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.0464,
+              "snippet": "因本品有致畸作用及从乳汁排出，故服药期禁怀孕及哺乳"
+            },
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "儿童用药",
+              "score": 0.0459,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "老年用药",
+              "score": 0.0456,
+              "snippet": "尚不明确"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_01",
+          "group": "老年人",
+          "question": "我70岁，正在吃华法林钠片，能加阿司匹林肠溶片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "老年用药",
+              "score": 0.0464,
+              "snippet": "老年用药请参见【注意事项】，使用前咨询医生"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "老年用药",
+              "score": 0.0445,
+              "snippet": "老年人应慎用,且用量应适当减少并个体化"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "禁忌",
+              "score": 0.0425,
+              "snippet": "1.孕妇、哺乳期妇女禁用。2.哮喘、鼻息肉综合征、对阿司匹林和其他解热镇痛药过敏者禁用。3.血友病或血小板减少症、溃疡病活动期患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_02",
+          "group": "老年人",
+          "question": "我78岁糖尿病，能吃盐酸二甲双胍片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "盐酸二甲双胍片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "盐酸二甲双胍片",
+              "section": "儿童用药",
+              "score": 0.0464,
+              "snippet": "1.10-16岁2型糖尿病患者使用本品的每日最高剂量为2000毫克。2.不推荐10岁以下儿童使用本品"
+            },
+            {
+              "drug": "盐酸二甲双胍片",
+              "section": "儿童用药",
+              "score": 0.0461,
+              "snippet": "1.10-16岁2型糖尿病患者使用本品的每日最高剂量为2000毫克。。2.不推荐10岁以下儿童使用本品"
+            },
+            {
+              "drug": "盐酸二甲双胍片",
+              "section": "老年用药",
+              "score": 0.0456,
+              "snippet": "1.65岁以上老年患者使用本品时应谨慎，并定期检查肾功能。2.通常不用最大剂量。3.不推荐80岁以上的患者使用本品，除非其肌酐清除率检查表明其肾功能未降低"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_03",
+          "group": "老年人",
+          "question": "我72岁，地高辛片和螺内酯片能一起用吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片",
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.0506,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.0496,
+              "snippet": "老年人（≥65岁）平均AUC相对于年轻成人约增高35%-60%，女性AUC较男性AUC高15%-20%。但头孢丙烯药代动力学在年龄?性别间差异不足以说明有调整剂量的必要"
+            },
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.0476,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_04",
+          "group": "老年人",
+          "question": "我68岁，吃辛伐他汀片期间能用克拉霉素片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "辛伐他汀片",
+              "section": "药物相互作用",
+              "score": 0.062,
+              "snippet": "当辛伐他汀与其他在治疗剂量下对细胞色素P450。A4有明显抑制作用的药物(如:环孢霉素、米贝地尔、伊曲康唑、酮康唑、红霉素、克拉霉素和奈法唑酮)或纤维酸类衍生物或烟酸合用时，导致横纹肌溶解的危险性增高。"
+            },
+            {
+              "drug": "克拉霉素片",
+              "section": "老年用药",
+              "score": 0.0464,
+              "snippet": "老年患者（]65岁）慎用，因肾功能减弱，用药量宜酌减"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "老年用药",
+              "score": 0.0456,
+              "snippet": "在老年患者（＞65岁）应用辛伐他汀的对照临床研究中，其降低总胆固醇和低密度脂蛋白胆固醇的效果与其它人群的结果相似，不良反应和实验室检查异常的发生率也无明显增多"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_05",
+          "group": "老年人",
+          "question": "我80岁肾功能不好，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "氧氟沙星片",
+              "section": "用法用量",
+              "score": 0.0823,
+              "snippet": "1.本品宜饭后吞服，不宜掰开，压碎或咀嚼药片。2.成人常用剂量： (1)肾功能减退：对肾功能减退的老年患者(肌酐清除率≤50ml/min)需根据肾功能调整给药剂量。(2)肝功能损害：严重肝功能损害患者氧氟沙星肝脏消除减慢,因此每日最大剂量不"
+            },
+            {
+              "drug": "左氧氟沙星片",
+              "section": "老年用药",
+              "score": 0.0464,
+              "snippet": "老年患者常有肾功能减退部分经肾排出需减量应用"
+            },
+            {
+              "drug": "氧氟沙星片",
+              "section": "老年用药",
+              "score": 0.0439,
+              "snippet": "老年患者常有肾功能减退部分经肾排出需减量应用"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_06",
+          "group": "老年人",
+          "question": "我75岁，能用螺内酯片治疗水肿吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.0492,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.0479,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.0471,
+              "snippet": "老年人（≥65岁）平均AUC相对于年轻成人约增高35%-60%，女性AUC较男性AUC高15%-20%。但头孢丙烯药代动力学在年龄?性别间差异不足以说明有调整剂量的必要"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_07",
+          "group": "老年人",
+          "question": "我73岁，吃卡马西平片安全吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "卡马西平片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.0511,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯干混悬剂",
+              "section": "老年用药",
+              "score": 0.0507,
+              "snippet": "健康老年志愿者(大于65岁)给予1g头孢丙烯，与20～40岁成人相比，AUC升高35%～60%，肾清除率下降40%。临床研究显示，当老年人接受和成人同样剂量时，安全有效性是可以接受的，且和非老年患者相当"
+            },
+            {
+              "drug": "头孢丙烯片",
+              "section": "老年用药",
+              "score": 0.0495,
+              "snippet": "老年人（≥65岁）平均AUC相对于年轻成人约增高35%-60%，女性AUC较男性AUC高15%-20%。但头孢丙烯药代动力学在年龄?性别间差异不足以说明有调整剂量的必要"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_08",
+          "group": "老年人",
+          "question": "我76岁，能吃对乙酰氨基酚片止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "对乙酰氨基酚片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "老年用药",
+              "score": 0.0464,
+              "snippet": "老年人对本药较敏感，用量应酌减"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "老年用药",
+              "score": 0.0461,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "用法用量",
+              "score": 0.0452,
+              "snippet": "口服。1.6～12岁儿童，一次0.5片。2.12岁以上儿童及成人一次1片，若持续发热或疼痛，可间隔4-6小时重复用药一次，24小时内不得超过4次"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Current: Chroma + BM25 + rules + KG",
+      "total_cases": 32,
+      "elapsed_seconds": 240.76,
+      "high_risk_accuracy": 0.75,
+      "evidence_recall_hit_rate": 1.0,
+      "unknown_rate": 0.0312,
+      "fallback_rate": 0.0,
+      "risk_distribution": {
+        "High": 24,
+        "Unknown": 1,
+        "Medium": 5,
+        "Low": 2
+      },
+      "by_group": {
+        "儿童": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.75,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.125
+        },
+        "成人": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.625,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.0
+        },
+        "孕妇": {
+          "total_cases": 8,
+          "high_risk_accuracy": 1.0,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.0
+        },
+        "老年人": {
+          "total_cases": 8,
+          "high_risk_accuracy": 0.625,
+          "evidence_recall_hit_rate": 1.0,
+          "unknown_rate": 0.0
+        }
+      },
+      "cases": [
+        {
+          "case_id": "child_01",
+          "group": "儿童",
+          "question": "我7岁，发烧了，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 10,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "氧氟沙星片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.由于目前大肠埃希菌对氟喹诺酮类药物耐药者多见，应在给药前留取尿培养标本，参考细菌药敏结果调整用药。2.本品大剂量应用或尿pH值在7以上时可发生结晶尿。为避免结晶尿的发生，宜多饮水，保持24小时排尿量在1200ml以上。3.肾功能减"
+            },
+            {
+              "drug": "左氧氟沙星片",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.肾功能不全者应减量或延长给药间期，重度肾功能不全者慎用。2.有中枢神经系统疾病及有癫痫病史患者应慎用。3.喹诺酮类药物尚可引起少见的光毒性反应(发生率\n2. 1.肾功能不全者应减量或延长给药间期，重度肾功能不全者慎用。。2.有中枢"
+            },
+            {
+              "drug": "左氧氟沙星片",
+              "section": "儿童用药",
+              "score": 7.2,
+              "snippet": "1. 品在婴幼儿及18岁以下青少年的安全性尚未确定。但本品用于数种幼龄动物时，可致关节病变。因此不宜用于18岁以下的小儿及青少年"
+            }
+          ]
+        },
+        {
+          "case_id": "child_02",
+          "group": "儿童",
+          "question": "我3岁，家里只有对乙酰氨基酚片，能直接吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 9,
+          "kg_relation_count": 16,
+          "fallback_used": false,
+          "drugs": [
+            "对乙酰氨基酚片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.本品为对症治疗药，用于解热连续使用不超过3天，用于止痛不超过5天，症状未缓解请咨询医师或药师。2.对阿司匹林过敏者慎用。3.不能同时服用其他含有解热镇痛药的药品（如某些复方抗感冒药）。4.肝肾功能不全者慎用。5.孕妇及哺乳期妇女慎"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "儿童用药",
+              "score": 8.0,
+              "snippet": "1. 3岁以下儿童因肝、肾功能发育不全，应避免使用\n2. 幼儿中枢神经系统对本药异常敏感，应谨慎给药\n3. 尚不明确"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "儿童用药",
+              "score": 7.2564,
+              "snippet": "3岁以下儿童因肝、肾功能发育不全，应避免使用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_03",
+          "group": "儿童",
+          "question": "我12岁感冒发热，可以吃阿司匹林肠溶片退烧吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 7,
+          "kg_relation_count": 10,
+          "fallback_used": false,
+          "drugs": [
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1. 本品为对症治疗药，用于解热连续使用不超过3天，用于止痛不超过5天，症状未缓解请咨询医师或药师。2. 不能同时服用其他含有解热镇痛药的药品（如某些复方抗感冒药）。3. 必须整片吞服，不得碾碎或溶解后服用。4. 年老体弱患者应在医师"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "儿童用药",
+              "score": 6.6,
+              "snippet": "1. 如未咨询医生，含有阿司匹林的药物不应用于儿童和青少年的伴或不伴发热的病毒感染。某种病毒性疾病，尤其是流感A，B和水痘，可能会发生少见的危及生命的Reye综合征，需立即进行药物治疗。合并应用阿司匹林时发生Reye综合征的风险可能增加，但"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "老年用药",
+              "score": 5.0,
+              "snippet": "1. 老年用药请参见【注意事项】，使用前咨询医生\n2. 过量中毒表现： 1.轻度，即水杨酸反应（Salicylism），多见于风湿病用本品治疗者，表现为头痛、头晕、耳鸣、耳聋、恶心、呕吐、腹泻、嗜睡、精神紊乱，多汗、呼吸深快、烦渴、手足不自"
+            }
+          ]
+        },
+        {
+          "case_id": "child_04",
+          "group": "儿童",
+          "question": "我8岁，能用奥美拉唑肠溶胶囊治胃痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 12,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "儿童用药",
+              "score": 7.4,
+              "snippet": "1. 尚无儿童用药经验，婴幼儿禁用"
+            },
+            {
+              "drug": "奥美拉唑",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1? 治疗胃溃疡时，应首先排除溃疡型胃癌的可能，因用本品治疗可减轻其症状，从而延误 治疗；。2? 肝肾功能不全者慎用；。3? 本品为肠溶胶囊，服用时注意不要嚼碎，以免药物在胃内过早释放而影响疗效"
+            },
+            {
+              "drug": "奥美拉唑",
+              "section": "儿童用药",
+              "score": 7.2,
+              "snippet": "1. 儿童应在医师指导下使用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_05",
+          "group": "儿童",
+          "question": "我15岁，能同时吃阿司匹林肠溶片和布洛芬胶囊止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "布洛芬胶囊",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.本品为对症治疗药，不宜长期或大量使用，用于止痛不得超过5天，用于解热不得超过3天，如症状不缓解，请咨询医师或药师。2.不能同时服用其他含有解热镇痛药的药品（如某些复方抗感冒药）。3.服用本品期间不得饮酒或含有酒精的饮料。4.有下列"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1. 本品为对症治疗药，用于解热连续使用不超过3天，用于止痛不超过5天，症状未缓解请咨询医师或药师。2. 不能同时服用其他含有解热镇痛药的药品（如某些复方抗感冒药）。3. 必须整片吞服，不得碾碎或溶解后服用。4. 年老体弱患者应在医师"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "儿童用药",
+              "score": 7.2,
+              "snippet": "1. 儿童必须在成人监护下使用"
+            }
+          ]
+        },
+        {
+          "case_id": "child_06",
+          "group": "儿童",
+          "question": "我6岁咳嗽，能吃利巴韦林颗粒吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Unknown",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 9,
+          "kg_relation_count": 2,
+          "fallback_used": false,
+          "drugs": [
+            "利巴韦林颗粒"
+          ],
+          "top_evidence": [
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.定期进行血常规（血红蛋白水平、白细胞计数、血小板计数）、血液生化（肝功能、TSH）检查，尤其血红蛋白检查（包括在开始前、治疗第2周、第4周）。对可能怀孕妇女每月进行怀孕测试。2.严重贫血患者慎用，有地中海贫血、镰刀细胞性贫血患者不"
+            },
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "儿童用药",
+              "score": 6.6,
+              "snippet": "1. 目前尚缺乏详细的研究资料"
+            },
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "警告与注意事项",
+              "score": 6.4619,
+              "snippet": "定期进行血常规（血红蛋白水平、白细胞计数、血小板计数）、血液生化（肝功能、TSH）检查，尤其血红蛋白检查（包括在开始前、治疗第2周、第4周）。对可能怀孕妇女每月进行怀孕测试。严重贫血患者慎用，有地中海贫血、镰刀细胞性贫血患者不推荐使用利巴韦"
+            }
+          ]
+        },
+        {
+          "case_id": "child_07",
+          "group": "儿童",
+          "question": "我10岁，有癫痫，能吃卡马西平片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 10,
+          "kg_relation_count": 16,
+          "fallback_used": false,
+          "drugs": [
+            "卡马西平片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "卡马西平片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1. 与三环类抗抑郁药有交叉过敏反应。2. 用药期间注意检查：全血细胞检查(包括血小板、网织红细胞及血清铁，应经常复查达2～3年)，尿常规，肝功能，眼科检查。卡马西平血药浓度测定。3. 一般疼痛不要用本品。4. 糖尿病人可能引起尿糖增"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "儿童用药",
+              "score": 7.4,
+              "snippet": "1. 本品可用于各年龄段儿童，具体参考[用法用量]\n2. 1.磺胺药可穿过血胎盘屏障至胎儿体内，动物实验发现有致畸作用。人类研究缺乏充足资料，孕妇宜避免应用。。2.磺胺药可自乳汁中分泌，乳汁中浓度约可达母体血药浓度的50%～100%，药物可"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "儿童用药",
+              "score": 5.8064,
+              "snippet": "尚不明确"
+            }
+          ]
+        },
+        {
+          "case_id": "child_08",
+          "group": "儿童",
+          "question": "我9岁，能用地高辛片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 9,
+          "kg_relation_count": 2,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "地高辛片",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.不宜与酸?碱类配伍。。2.慎用: 低钾血症;不完全性房室传导阻滞;高钙血症;甲状腺功能低下;缺血性心脏病;心肌梗死;心肌炎;肾功能损害。。3.用药期间应注意随访检查: 血压?心率及心律;心电图;心功能监测;电解质尤其钾?钙?镁;肾"
+            },
+            {
+              "drug": "地高辛片",
+              "section": "儿童用药",
+              "score": 7.2,
+              "snippet": "1. 新生儿对本品的耐受性不定,其肾清除减少;早产儿与未成熟儿对本品敏感,按其不成熟程度而减小剂量。按体重或体表面积,1月以上婴儿比成人用量略大"
+            },
+            {
+              "drug": "地高辛片",
+              "section": "警告与注意事项",
+              "score": 6.403,
+              "snippet": "1.不宜与酸?碱类配伍。。2.慎用: 低钾血症;不完全性房室传导阻滞;高钙血症;甲状腺功能低下;缺血性心脏病;心肌梗死;心肌炎;肾功能损害。。3.用药期间应注意随访检查: 血压?心率及心律;心电图;心功能监测;电解质尤其钾?钙?镁;肾功能;"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_01",
+          "group": "成人",
+          "question": "我35岁，正在吃华法林钠片，能加阿司匹林肠溶片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 5,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "老年用药",
+              "score": 0.2061,
+              "snippet": "老年用药请参见【注意事项】，使用前咨询医生"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "禁忌",
+              "score": 0.2054,
+              "snippet": "1.孕妇、哺乳期妇女禁用。2.哮喘、鼻息肉综合征、对阿司匹林和其他解热镇痛药过敏者禁用。3.血友病或血小板减少症、溃疡病活动期患者禁用"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "禁忌",
+              "score": 0.2052,
+              "snippet": "1.孕妇、哺乳期妇女禁用。。2.哮喘、鼻息肉综合征、对阿司匹林和其他解热镇痛药过敏者禁用。。3.血友病或血小板减少症、溃疡病活动期患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_02",
+          "group": "成人",
+          "question": "我40岁，吃华法林钠片期间能吃布洛芬胶囊止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "布洛芬胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "华法林钠片",
+              "section": "儿童用药",
+              "score": 0.2059,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.2056,
+              "snippet": "孕妇及哺乳期妇女禁用"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.2052,
+              "snippet": "尚不明确"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_03",
+          "group": "成人",
+          "question": "我45岁，辛伐他汀片和克拉霉素片能一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 5,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "注射用甲磺酸左氧氟沙星",
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "辛伐他汀片",
+              "section": "药物相互作用",
+              "score": 0.2725,
+              "snippet": "当辛伐他汀与其他在治疗剂量下对细胞色素P450。A4有明显抑制作用的药物(如:环孢霉素、米贝地尔、伊曲康唑、酮康唑、红霉素、克拉霉素和奈法唑酮)或纤维酸类衍生物或烟酸合用时，导致横纹肌溶解的危险性增高。"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "药物相互作用",
+              "score": 0.2626,
+              "snippet": "当辛伐他汀与其他在治疗剂量下对细胞色素P450。A4有明显抑制作用的药物(如:环孢霉素、米贝地尔、伊曲康唑、酮康唑、红霉素、克拉霉素和奈法唑酮)或纤维酸类衍生物或烟酸合用时，导致横纹肌溶解的危险性增高。本品与甲基羟戊二酰辅酶A(HMG-CO"
+            },
+            {
+              "drug": "注射用甲磺酸左氧氟沙星",
+              "section": "儿童用药",
+              "score": 0.2023,
+              "snippet": "18岁以下患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_04",
+          "group": "成人",
+          "question": "我50岁，硫酸氢氯吡格雷片和奥美拉唑肠溶胶囊能同服吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊",
+            "硫酸氢氯吡格雷片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "禁忌",
+              "score": 0.2556,
+              "snippet": "对本品过敏者、严重肾功能不全者及婴幼儿禁用"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "禁忌",
+              "score": 0.2554,
+              "snippet": "对本品过敏者?严重肾功能不全者及婴幼儿禁用"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "警告与注意事项",
+              "score": 0.2549,
+              "snippet": "肾功能不全及严重肝功能不全者慎用。药物对诊断的影响： ①奥美拉唑可抑制胃酸分泌，使胃内pH值升高，反馈性地使胃粘膜中的G细胞分泌促胃泌素，从而使血中促胃泌素水平升高；②奥美拉唑可使13C-尿素呼气试验（UBT）结果出现假阴性，其机制可能是奥"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_05",
+          "group": "成人",
+          "question": "我38岁，甲氨蝶呤片治疗期间可以吃布洛芬胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 4,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "methotrexate",
+            "布洛芬胶囊",
+            "甲氨蝶呤片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "儿童用药",
+              "score": 0.2064,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "老年用药",
+              "score": 0.2061,
+              "snippet": "尚不明确"
+            },
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "禁忌",
+              "score": 0.2054,
+              "snippet": "已知对本品高度过敏的患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_06",
+          "group": "成人",
+          "question": "我30岁，卡马西平片和克拉霉素片可以一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 7,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "卡马西平片",
+            "注射用甲磺酸左氧氟沙星"
+          ],
+          "top_evidence": [
+            {
+              "drug": "卡马西平片",
+              "section": "药物相互作用",
+              "score": 0.2725,
+              "snippet": "与含雌激素的避孕药，环孢素，洋地黄类(可能地高辛除外)，雌激素，左旋甲状腺素或奎尼丁合用时，由于卡马西平对肝药酶的诱导，这些药的效应都会降低，用量应作调整，改用仅含孕激素(黄体酮)的口服避孕药。与口服避孕药合用可能出现阴道大出血。与多西环素"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "药物相互作用",
+              "score": 0.271,
+              "snippet": "锂盐可以降低卡马西平的抗利尿作用。卡马西平(与三环类抗抑郁药结构相似)与单胺氧化酶(MAO)抑制合用，可引起高热或(和)高血压危象，严重惊厥甚至死亡，两药应用至少要间隔14天。当卡马西平用作抗惊厥剂时，MAO抑制药可以改变癫痫发作的类型。若"
+            },
+            {
+              "drug": "注射用甲磺酸左氧氟沙星",
+              "section": "儿童用药",
+              "score": 0.2045,
+              "snippet": "18岁以下患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_07",
+          "group": "成人",
+          "question": "我42岁，地高辛片和奥美拉唑肠溶胶囊可以同服吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片",
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "警告与注意事项",
+              "score": 0.2556,
+              "snippet": "肾功能不全及严重肝功能不全者慎用。药物对诊断的影响： ①奥美拉唑可抑制胃酸分泌，使胃内pH值升高，反馈性地使胃粘膜中的G细胞分泌促胃泌素，从而使血中促胃泌素水平升高；②奥美拉唑可使13C-尿素呼气试验（UBT）结果出现假阴性，其机制可能是奥"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "警告与注意事项",
+              "score": 0.2554,
+              "snippet": "肾功能不全及严重肝功能不全者慎用。药物对诊断的影响：。①奥美拉唑可抑制胃酸分泌，使胃内pH值升高，反馈性地使胃粘膜中的G细胞分泌促胃泌素，从而使血中促胃泌素水平升高；。②奥美拉唑可使13C-尿素呼气试验（UBT）结果出现假阴性，其机制可能是"
+            },
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "禁忌",
+              "score": 0.2552,
+              "snippet": "对本品过敏者、严重肾功能不全者及婴幼儿禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "adult_08",
+          "group": "成人",
+          "question": "我36岁，螺内酯片和布洛芬胶囊能一起吃吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Low",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊",
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "布洛芬胶囊",
+              "section": "儿童用药",
+              "score": 0.2064,
+              "snippet": "儿童必须在成人监护下使用"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 0.2061,
+              "snippet": "孕妇及哺乳期妇女禁用"
+            },
+            {
+              "drug": "螺内酯片",
+              "section": "禁忌",
+              "score": 0.2056,
+              "snippet": "高钾血症患者禁用."
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_01",
+          "group": "孕妇",
+          "question": "我怀孕8周，能吃华法林钠片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 11,
+          "kg_relation_count": 4,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "华法林钠片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.严格掌握适应症，在无凝血酶原测定的条件时，切不可滥用本品。2.个体差异较大，治疗期间应严密观察病情，并依据凝血酶原时间INR值调整用量。治疗期间还应严密观察口腔黏膜?鼻腔?皮下出血及大便隐血?血尿等，用药期间应避免不必要的手术操作"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 8.0,
+              "snippet": "1. 1. 易通过胎盘并致畸胎.妊娠期使用本品可致\\\"胎儿华法林综合征，发生率可达5%～。0%.表现为骨骺分离?鼻发育不全?视神经萎缩?智力迟纯，心?肝?脾?胃肠道?头部等畸形.妊娠后期应用可致出血和死胎，故妊娠早期2个月及妊娠后期。个月禁"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.2561,
+              "snippet": "1. 易通过胎盘并致畸胎.妊娠期使用本品可致\\\"胎儿华法林综合征，发生率可达5%～。0%.表现为骨骺分离?鼻发育不全?视神经萎缩?智力迟纯，心?肝?脾?胃肠道?头部等畸形.妊娠后期应用可致出血和死胎，故妊娠早期2个月及妊娠后期。个月禁用本品"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_02",
+          "group": "孕妇",
+          "question": "我孕中期感冒，能吃利巴韦林颗粒吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 12,
+          "kg_relation_count": 2,
+          "fallback_used": false,
+          "drugs": [
+            "利巴韦林颗粒"
+          ],
+          "top_evidence": [
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.4,
+              "snippet": "1. 已经充分的动物研究证实利巴韦林有明显的致突变和胚胎毒性（在低于人体用量的1/20时即可出现），利巴韦林会引起胎儿先天畸形或死亡，在治疗开始前、治疗期间和停药后至少6个月，服用利巴韦林的男性和女性均应避免怀孕，可能怀孕者应采用至少两种以"
+            },
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.定期进行血常规（血红蛋白水平、白细胞计数、血小板计数）、血液生化（肝功能、TSH）检查，尤其血红蛋白检查（包括在开始前、治疗第2周、第4周）。对可能怀孕妇女每月进行怀孕测试。2.严重贫血患者慎用，有地中海贫血、镰刀细胞性贫血患者不"
+            },
+            {
+              "drug": "利巴韦林颗粒",
+              "section": "警告与注意事项",
+              "score": 6.4661,
+              "snippet": "定期进行血常规（血红蛋白水平、白细胞计数、血小板计数）、血液生化（肝功能、TSH）检查，尤其血红蛋白检查（包括在开始前、治疗第2周、第4周）。对可能怀孕妇女每月进行怀孕测试。严重贫血患者慎用，有地中海贫血、镰刀细胞性贫血患者不推荐使用利巴韦"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_03",
+          "group": "孕妇",
+          "question": "我怀孕了，能继续吃辛伐他汀片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 5,
+          "fallback_used": false,
+          "drugs": [
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "辛伐他汀片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.病人接受辛伐他汀治疗以前应接受标准胆固醇饮食并在治疗过程中继续使用。2.肝脏反应。本药应慎用在大量饮酒和/或有肝病历史的病人。有活动性肝病或无法解释的氨基转移酶升高者应禁用辛伐他汀。在临床实验中，有少数服用辛伐他汀的患者有显著的血"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.4,
+              "snippet": "1. 1.妊娠期妇女 妊娠期妇女禁用本品。尚未有妊娠期妇女服用辛伐他汀的安全性数据。在妊娠妇女中尚未进行辛伐他汀的对照临床试验。由于在孕期使用HMG-CoA而导致的先天缺陷也很少有报道。但是，在对大约200名孕期的前三个月使用过辛伐他汀或其"
+            },
+            {
+              "drug": "辛伐他汀片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.2564,
+              "snippet": "1.妊娠期妇女 妊娠期妇女禁用本品。尚未有妊娠期妇女服用辛伐他汀的安全性数据。在妊娠妇女中尚未进行辛伐他汀的对照临床试验。由于在孕期使用HMG-CoA而导致的先天缺陷也很少有报道。但是，在对大约200名孕期的前三个月使用过辛伐他汀或其他密切"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_04",
+          "group": "孕妇",
+          "question": "我备孕期间长痘，能吃异维A酸软胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 9,
+          "kg_relation_count": 5,
+          "fallback_used": false,
+          "drugs": [
+            "异维A酸软胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "异维A酸软胶囊",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1. 本药避免与维生素A及四环素等同时服用。2. 育龄期妇女服药前?停药后应作妊娠试验。3. 用药期间及停药后三月内不得献血。4. 避免太阳光及UV射线过度照射。5. 糖尿病?肥胖病?酗酒及高脂血症?脂质代谢紊乱者慎用。6. 治疗初期"
+            },
+            {
+              "drug": "异维A酸软胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.4,
+              "snippet": "1. 孕妇、哺乳期妇女禁用。育龄妇女或其配偶服药前后三个月与服药期间应严格避孕，万勿妊娠"
+            },
+            {
+              "drug": "异维A酸软胶囊",
+              "section": "警告与注意事项",
+              "score": 7.2522,
+              "snippet": "1. 本药避免与维生素A及四环素等同时服用。2. 育龄期妇女服药前?停药后应作妊娠试验。3. 用药期间及停药后三月内不得献血。4. 避免太阳光及UV射线过度照射。5. 糖尿病?肥胖病?酗酒及高脂血症?脂质代谢紊乱者慎用。6. 治疗初期痤疮症"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_05",
+          "group": "孕妇",
+          "question": "我怀孕期间牙疼，可以吃布洛芬胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 6,
+          "kg_relation_count": 11,
+          "fallback_used": false,
+          "drugs": [
+            "布洛芬胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "布洛芬胶囊",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.本品为对症治疗药，不宜长期或大量使用，用于止痛不得超过5天，用于解热不得超过3天，如症状不缓解，请咨询医师或药师。2.不能同时服用其他含有解热镇痛药的药品（如某些复方抗感冒药）。3.服用本品期间不得饮酒或含有酒精的饮料。4.有下列"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.4,
+              "snippet": "1. 孕妇及哺乳期妇女禁用"
+            },
+            {
+              "drug": "布洛芬胶囊",
+              "section": "禁忌",
+              "score": 5.8,
+              "snippet": "1. 1.对其他非甾体抗炎药过敏者禁用。2.孕妇及哺乳期妇女禁用。3.对阿司匹林过敏的哮喘患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_06",
+          "group": "孕妇",
+          "question": "我怀孕期间感染，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 11,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "氧氟沙星片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.由于目前大肠埃希菌对氟喹诺酮类药物耐药者多见，应在给药前留取尿培养标本，参考细菌药敏结果调整用药。2.本品大剂量应用或尿pH值在7以上时可发生结晶尿。为避免结晶尿的发生，宜多饮水，保持24小时排尿量在1200ml以上。3.肾功能减"
+            },
+            {
+              "drug": "左氧氟沙星片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.4,
+              "snippet": "1. 动物实验未证实喹诺酮类药物有致畸作用但对孕妇用药进行的研究尚无明确结论鉴于本药可引起未成年动物关节病变故孕妇禁用哺乳期妇女应暂停哺乳"
+            },
+            {
+              "drug": "氧氟沙星片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.4,
+              "snippet": "1. 动物实验未证实喹诺酮类药物有致畸作用，但对孕妇用药进行的研究尚无明确结论。鉴于本药可引起未成年动物关节病变，故孕妇禁用，哺乳期妇女应用本品时应暂停哺乳\n2. 动物实验未证实喹诺酮类药物有致畸作用但对孕妇用药进行的研究尚无明确结论鉴于本"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_07",
+          "group": "孕妇",
+          "question": "我怀孕期间胃痛，可以吃奥美拉唑肠溶胶囊吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 12,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "奥美拉唑",
+            "奥美拉唑肠溶胶囊"
+          ],
+          "top_evidence": [
+            {
+              "drug": "奥美拉唑肠溶胶囊",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 8.0,
+              "snippet": "1. 虽然动物实验表明，本品无胎儿毒性或致畸作用，但对孕妇一般不用，对哺乳期妇女也应慎用"
+            },
+            {
+              "drug": "奥美拉唑",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1? 治疗胃溃疡时，应首先排除溃疡型胃癌的可能，因用本品治疗可减轻其症状，从而延误 治疗；。2? 肝肾功能不全者慎用；。3? 本品为肠溶胶囊，服用时注意不要嚼碎，以免药物在胃内过早释放而影响疗效"
+            },
+            {
+              "drug": "奥美拉唑",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.2,
+              "snippet": "1. 孕妇、哺乳期妇女应在医师指导下服用"
+            }
+          ]
+        },
+        {
+          "case_id": "pregnant_08",
+          "group": "孕妇",
+          "question": "我怀孕期间能吃甲氨蝶呤片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 5,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "methotrexate",
+            "甲氨蝶呤片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.本品的致突变性,致畸性和致癌性较烷化剂为轻,但长期服用后,有潜在的导致继发性肿瘤的危险。2.对生殖功能的影响,虽也较烷化剂类抗癌药为小,但亦可导致闭经和精子减少或缺乏,尤其是在长期应用较大剂量后,但一般多不严重,有时呈不可逆性。3"
+            },
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "孕妇及哺乳期妇女用药",
+              "score": 7.4,
+              "snippet": "1. 因本品有致畸作用及从乳汁排出，故服药期禁怀孕及哺乳"
+            },
+            {
+              "drug": "甲氨蝶呤片",
+              "section": "禁忌",
+              "score": 0.6054,
+              "snippet": "已知对本品高度过敏的患者禁用"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_01",
+          "group": "老年人",
+          "question": "我70岁，正在吃华法林钠片，能加阿司匹林肠溶片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 12,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "华法林钠片",
+            "阿司匹林肠溶片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "华法林钠片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.严格掌握适应症，在无凝血酶原测定的条件时，切不可滥用本品。2.个体差异较大，治疗期间应严密观察病情，并依据凝血酶原时间INR值调整用量。治疗期间还应严密观察口腔黏膜?鼻腔?皮下出血及大便隐血?血尿等，用药期间应避免不必要的手术操作"
+            },
+            {
+              "drug": "阿司匹林肠溶片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1. 本品为对症治疗药，用于解热连续使用不超过3天，用于止痛不超过5天，症状未缓解请咨询医师或药师。2. 不能同时服用其他含有解热镇痛药的药品（如某些复方抗感冒药）。3. 必须整片吞服，不得碾碎或溶解后服用。4. 年老体弱患者应在医师"
+            },
+            {
+              "drug": "华法林钠片",
+              "section": "老年用药",
+              "score": 7.2,
+              "snippet": "1. 老年人应慎用,且用量应适当减少并个体化\n2. 未进行该项实验且无可靠参考文献"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_02",
+          "group": "老年人",
+          "question": "我78岁糖尿病，能吃盐酸二甲双胍片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 8,
+          "kg_relation_count": 6,
+          "fallback_used": false,
+          "drugs": [
+            "盐酸二甲双胍片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "盐酸二甲双胍片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.口服本品期间，应定期检查肾功能，以减少乳酸酸中毒的发生，尤其是老年患者更应定期检查肾功能。2.接受外科手术和碘剂X线摄影检查前患者应暂时停止口服本品。3.肝功能不良：某些乳酸性酸中毒患者合并有肝功能损害。因此有肝脏疾病者应避免使用"
+            },
+            {
+              "drug": "盐酸二甲双胍片",
+              "section": "老年用药",
+              "score": 7.2,
+              "snippet": "1. 1.65岁以上老年患者使用本品时应谨慎，并定期检查肾功能。2.通常不用最大剂量。3.不推荐80岁以上的患者使用本品，除非其肌酐清除率检查表明其肾功能未降低\n2. 1.65岁以上老年患者使用本品时应谨慎，并定期检查肾功能。。2.通常不用"
+            },
+            {
+              "drug": "盐酸二甲双胍片",
+              "section": "老年用药",
+              "score": 6.4061,
+              "snippet": "1.65岁以上老年患者使用本品时应谨慎，并定期检查肾功能。2.通常不用最大剂量。3.不推荐80岁以上的患者使用本品，除非其肌酐清除率检查表明其肾功能未降低"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_03",
+          "group": "老年人",
+          "question": "我72岁，地高辛片和螺内酯片能一起用吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 6,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "地高辛片",
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "地高辛片",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.不宜与酸?碱类配伍。。2.慎用: 低钾血症;不完全性房室传导阻滞;高钙血症;甲状腺功能低下;缺血性心脏病;心肌梗死;心肌炎;肾功能损害。。3.用药期间应注意随访检查: 血压?心率及心律;心电图;心功能监测;电解质尤其钾?钙?镁;肾"
+            },
+            {
+              "drug": "地高辛片",
+              "section": "老年用药",
+              "score": 7.2,
+              "snippet": "1. 老年人肝肾功能不全,表观分布容积减小或电解质平衡失调者,对本品耐受性低,必须减少剂量"
+            },
+            {
+              "drug": "螺内酯片",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.下列情况慎用: (1)无尿。(2)肾功能不全。(3)肝功能不全，因本药引起电解质紊乱可诱发肝昏迷。(4)低钠血症。(5)酸中毒，一方面酸中毒可加重或促发本药所致的高钾血症，另一方面本药可加重酸中毒。(6)乳房增大或月经失调者。2."
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_04",
+          "group": "老年人",
+          "question": "我68岁，吃辛伐他汀片期间能用克拉霉素片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 9,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "克拉霉素片",
+            "辛伐他汀片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "辛伐他汀片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.病人接受辛伐他汀治疗以前应接受标准胆固醇饮食并在治疗过程中继续使用。2.肝脏反应。本药应慎用在大量饮酒和/或有肝病历史的病人。有活动性肝病或无法解释的氨基转移酶升高者应禁用辛伐他汀。在临床实验中，有少数服用辛伐他汀的患者有显著的血"
+            },
+            {
+              "drug": "克拉霉素片",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.肝功能损害?中度至严重肾功能损害者慎用。。2.肾功能严重损害（肌酐清除率小于30ml/分钟）者，须作剂量调整。常用量为一次0.25g，一日1次；重症感染者首剂0.5g，以后一次0.25g，一日2次。。3.本品与红霉素及其他大环内酯"
+            },
+            {
+              "drug": "克拉霉素片",
+              "section": "老年用药",
+              "score": 7.2,
+              "snippet": "1. 老年人的耐受性与年轻人相仿\n2. 老年患者（]65岁）慎用，因肾功能减弱，用药量宜酌减\n3. 1.当服用大剂量的克拉霉素时，可能有胃肠不适。2.因过量引起症状时应迅速洗胃并适当给予支持疗法"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_05",
+          "group": "老年人",
+          "question": "我80岁肾功能不好，可以吃左氧氟沙星片吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 12,
+          "kg_relation_count": 0,
+          "fallback_used": false,
+          "drugs": [
+            "左氧氟沙星片",
+            "氧氟沙星片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "氧氟沙星片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.由于目前大肠埃希菌对氟喹诺酮类药物耐药者多见，应在给药前留取尿培养标本，参考细菌药敏结果调整用药。2.本品大剂量应用或尿pH值在7以上时可发生结晶尿。为避免结晶尿的发生，宜多饮水，保持24小时排尿量在1200ml以上。3.肾功能减"
+            },
+            {
+              "drug": "氧氟沙星片",
+              "section": "用法用量",
+              "score": 7.2113,
+              "snippet": "1.本品宜饭后吞服，不宜掰开，压碎或咀嚼药片。2.成人常用剂量： (1)肾功能减退：对肾功能减退的老年患者(肌酐清除率≤50ml/min)需根据肾功能调整给药剂量。(2)肝功能损害：严重肝功能损害患者氧氟沙星肝脏消除减慢,因此每日最大剂量不"
+            },
+            {
+              "drug": "左氧氟沙星片",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.肾功能不全者应减量或延长给药间期，重度肾功能不全者慎用。2.有中枢神经系统疾病及有癫痫病史患者应慎用。3.喹诺酮类药物尚可引起少见的光毒性反应(发生率\n2. 1.肾功能不全者应减量或延长给药间期，重度肾功能不全者慎用。。2.有中枢"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_06",
+          "group": "老年人",
+          "question": "我75岁，能用螺内酯片治疗水肿吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 4,
+          "kg_relation_count": 4,
+          "fallback_used": false,
+          "drugs": [
+            "螺内酯片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "螺内酯片",
+              "section": "警告与注意事项",
+              "score": 7.2,
+              "snippet": "1. 1.下列情况慎用: (1)无尿。(2)肾功能不全。(3)肝功能不全，因本药引起电解质紊乱可诱发肝昏迷。(4)低钠血症。(5)酸中毒，一方面酸中毒可加重或促发本药所致的高钾血症，另一方面本药可加重酸中毒。(6)乳房增大或月经失调者。2."
+            },
+            {
+              "drug": "螺内酯片",
+              "section": "老年用药",
+              "score": 6.6,
+              "snippet": "1. 老年人用药较易发生高钾血症和利尿过度"
+            },
+            {
+              "drug": "螺内酯片",
+              "section": "用法用量",
+              "score": 5.6,
+              "snippet": "1. 1.成人 (1)治疗水肿性疾病，每日40―120mg，分2―4次服用，至少连服5日。以后酌情调整剂量。(2)治疗高血压，开始每日40―80mg，分次服用，至少2周，以后酌情调整剂量，不宜与血管紧张素转换酶抑制剂合用，以免增加发生高钾血"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_07",
+          "group": "老年人",
+          "question": "我73岁，吃卡马西平片安全吗？",
+          "expected_risk": "High",
+          "predicted_risk": "High",
+          "high_risk_correct": true,
+          "evidence_hit": true,
+          "evidence_count": 10,
+          "kg_relation_count": 16,
+          "fallback_used": false,
+          "drugs": [
+            "卡马西平片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "卡马西平片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1. 与三环类抗抑郁药有交叉过敏反应。2. 用药期间注意检查：全血细胞检查(包括血小板、网织红细胞及血清铁，应经常复查达2～3年)，尿常规，肝功能，眼科检查。卡马西平血药浓度测定。3. 一般疼痛不要用本品。4. 糖尿病人可能引起尿糖增"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "老年用药",
+              "score": 7.2,
+              "snippet": "1. 老年患者对本品敏感者多，常可引起认知功能障碍?激越?不安?焦虑?精神错乱?房室传导阻滞或心动过缓，也可引起再障\n2. 1、体征和症状 过量引起的体征和症状，主要发生在中枢神经系统、心血管系统、呼吸系统等。2、中枢神经系统 中枢抑制、定"
+            },
+            {
+              "drug": "卡马西平片",
+              "section": "老年用药",
+              "score": 6.6547,
+              "snippet": "老年患者应用磺胺药时发生严重不良反应的机会增加。如严重皮疹、骨髓抑制和血小板减少等。因此老年患者宜避免应用，确有指征时需权衡利弊后决定"
+            }
+          ]
+        },
+        {
+          "case_id": "elderly_08",
+          "group": "老年人",
+          "question": "我76岁，能吃对乙酰氨基酚片止痛吗？",
+          "expected_risk": "High",
+          "predicted_risk": "Medium",
+          "high_risk_correct": false,
+          "evidence_hit": true,
+          "evidence_count": 12,
+          "kg_relation_count": 16,
+          "fallback_used": false,
+          "drugs": [
+            "对乙酰氨基酚片"
+          ],
+          "top_evidence": [
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "警告与注意事项",
+              "score": 8.0,
+              "snippet": "1. 1.本品为对症治疗药，用于解热连续使用不超过3天，用于止痛不超过5天，症状未缓解请咨询医师或药师。2.对阿司匹林过敏者慎用。3.不能同时服用其他含有解热镇痛药的药品（如某些复方抗感冒药）。4.肝肾功能不全者慎用。5.孕妇及哺乳期妇女慎"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "老年用药",
+              "score": 7.2,
+              "snippet": "1. 老年患者由于肝、肾功能发生减退，本品半衰期有所延长，易发生不良反应，应慎用或适当减量使用\n2. 老年人对本药较敏感，用量应酌减\n3. 尚不明确"
+            },
+            {
+              "drug": "对乙酰氨基酚片",
+              "section": "老年用药",
+              "score": 6.4049,
+              "snippet": "老年患者由于肝、肾功能发生减退，本品半衰期有所延长，易发生不良反应，应慎用或适当减量使用"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

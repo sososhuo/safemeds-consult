@@ -9,7 +9,9 @@ from app.schemas.consultation import KnowledgeRelation
 RELATION_LABELS = {
     "INTERACTS_WITH": "相互作用",
     "BELONGS_TO": "属于",
+    "CONTRAINDICATED_FOR": "禁用于",
     "CONTRAINDICATED_WITH": "禁忌合用",
+    "USE_WITH_CAUTION_IN": "慎用于",
     "CAUTION_FOR": "慎用于",
     "COMMON_DRUG": "常用药",
     "MAY_CAUSE": "风险",
@@ -112,11 +114,14 @@ class MedicationKnowledgeGraph:
         WITH DISTINCT r
         WITH startNode(r) AS s, type(r) AS relation, endNode(r) AS o, r
         RETURN
-          coalesce(s.name, s.id) AS subject,
+          coalesce(s.name, elementId(s)) AS subject,
           relation,
-          coalesce(o.name, o.id) AS object,
+          coalesce(o.name, elementId(o)) AS object,
           coalesce(r.source, "neo4j_kg") AS source,
-          coalesce(r.weight, 1.0) AS weight
+          coalesce(r.weight, 1.0) AS weight,
+          r.risk_level AS risk_level,
+          coalesce(r.mechanism, "") AS mechanism,
+          coalesce(r.recommendation, "") AS recommendation
         ORDER BY weight DESC, subject ASC, relation ASC, object ASC
         LIMIT $limit
         """
@@ -128,9 +133,12 @@ class MedicationKnowledgeGraph:
                 KnowledgeRelation(
                     subject=row["subject"],
                     relation=RELATION_LABELS.get(row["relation"], row["relation"].lower()),
-                    object=row["object"],
-                    source=row["source"],
-                    weight=float(row["weight"]),
-                )
-                for row in rows
-            ]
+                object=row["object"],
+                source=row["source"],
+                weight=float(row["weight"]),
+                risk_level=row["risk_level"],
+                mechanism=row["mechanism"],
+                recommendation=row["recommendation"],
+            )
+            for row in rows
+        ]

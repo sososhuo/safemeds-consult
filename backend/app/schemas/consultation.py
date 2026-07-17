@@ -18,6 +18,9 @@ class KnowledgeRelation(BaseModel):
     object: str
     source: str = "local_kg"
     weight: float = 1.0
+    risk_level: Optional[RiskLevel] = None
+    mechanism: str = ""
+    recommendation: str = ""
 
 
 class SafetyFlag(BaseModel):

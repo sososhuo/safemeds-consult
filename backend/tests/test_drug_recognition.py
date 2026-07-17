@@ -57,6 +57,44 @@ class TestDrugRecognitionStage(unittest.TestCase):
         ctx = self.stage.execute_on_text("吃了拜阿司匹灵")
         self.assertIn("aspirin", ctx.normalized_drugs)
 
+    def test_canonical_drug_name_wins_over_polluted_alias(self):
+        records = [
+            {"drug": "阿司匹林肠溶片", "aliases": [], "sections": []},
+            {"drug": "阿魏酸钠片", "aliases": ["阿司匹林肠溶片"], "sections": []},
+            {"drug": "阿魏酸哌嗪片", "aliases": [], "sections": []},
+        ]
+        stage = DrugRecognitionStage(records)
+
+        ctx = stage.execute_on_text("我65岁，肠胃炎，想吃阿司匹林肠溶片和阿魏酸哌嗪片可以吗")
+
+        self.assertIn("阿司匹林肠溶片", ctx.normalized_drugs)
+        self.assertIn("阿魏酸哌嗪片", ctx.normalized_drugs)
+        self.assertNotIn("阿魏酸钠片", ctx.normalized_drugs)
+        self.assertIn("老年人", ctx.population)
+        self.assertIn("肠胃炎", ctx.conditions)
+
+    def test_aspirin_common_misspelling(self):
+        records = [{"drug": "阿司匹林肠溶片", "aliases": [], "sections": []}]
+        stage = DrugRecognitionStage(records)
+
+        ctx = stage.execute_on_text("阿斯匹林肠溶片可以吃吗")
+
+        self.assertIn("阿司匹林肠溶片", ctx.normalized_drugs)
+
+    def test_single_character_drug_name_does_not_match_inside_long_drug(self):
+        records = [
+            {"drug": "氧", "aliases": [], "sections": []},
+            {"drug": "氢氧化铝片", "aliases": [], "sections": []},
+            {"drug": "布洛芬胶囊", "aliases": [], "sections": []},
+        ]
+        stage = DrugRecognitionStage(records)
+
+        ctx = stage.execute_on_text("我7岁，发烧了，想吃布洛芬胶囊和氢氧化铝片可以吗")
+
+        self.assertIn("布洛芬胶囊", ctx.normalized_drugs)
+        self.assertIn("氢氧化铝片", ctx.normalized_drugs)
+        self.assertNotIn("氧", ctx.normalized_drugs)
+
     def test_multiple_drugs(self):
         """多药物同时识别。"""
         ctx = self.stage.execute_on_text("华法林和布洛芬一起吃可以吗")
@@ -142,6 +180,29 @@ class TestDrugRecognitionStage(unittest.TestCase):
         """老年人识别。"""
         ctx = self.stage.execute_on_text("65岁男性")
         self.assertIn("老年人", ctx.population)
+
+    def test_population_child_by_arabic_age(self):
+        """阿拉伯数字年龄应映射到儿童。"""
+        ctx = self.stage.execute_on_text("我7岁，发烧了，想吃布洛芬胶囊和感冒清热颗粒可以吗")
+        self.assertIn("儿童", ctx.population)
+        self.assertNotIn("老年人", ctx.population)
+
+    def test_population_child_by_chinese_age(self):
+        """中文数字年龄应映射到儿童。"""
+        ctx = self.stage.execute_on_text("我七岁，发烧了")
+        self.assertIn("儿童", ctx.population)
+        self.assertNotIn("老年人", ctx.population)
+
+    def test_population_elderly_by_chinese_age(self):
+        """中文数字老年年龄应映射到老年人。"""
+        ctx = self.stage.execute_on_text("我六十五岁，想咨询用药")
+        self.assertIn("老年人", ctx.population)
+
+    def test_population_adult_age_not_special_population(self):
+        """18 到 64 岁不应映射为儿童或老年人。"""
+        ctx = self.stage.execute_on_text("我30岁，发烧了")
+        self.assertNotIn("儿童", ctx.population)
+        self.assertNotIn("老年人", ctx.population)
 
     def test_population_pregnant(self):
         """孕妇识别。"""
