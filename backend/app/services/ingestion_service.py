@@ -1,3 +1,7 @@
+"""
+知识摄入服务模块：解析上传文档并生成可检索的药品知识记录。
+"""
+
 from __future__ import annotations
 
 import csv

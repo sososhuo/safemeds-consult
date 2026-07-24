@@ -1,3 +1,7 @@
+"""
+指标服务模块：汇总咨询量、风险等级、药物命中和最近活动统计。
+"""
+
 from __future__ import annotations
 
 from collections import Counter, deque

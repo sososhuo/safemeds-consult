@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+知识图谱候选导入脚本：把说明书候选关系写入 Neo4j 图数据库。
+"""
+
 from __future__ import annotations
 
 import argparse

@@ -1,3 +1,4 @@
+// 前端 API 客户端：封装咨询、历史、统计和知识库相关 HTTP 请求。
 const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
 async function request(path, options = {}) {

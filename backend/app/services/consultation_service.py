@@ -1,3 +1,7 @@
+"""
+咨询编排服务模块：整合药物识别、RAG、知识图谱和风险规则生成安全结论。
+"""
+
 from __future__ import annotations
 
 import re
@@ -6,7 +10,7 @@ from typing import Dict, List
 
 from app.core.config import LLM_ENABLE_RESPONSE_GENERATION, VECTOR_BACKEND
 from app.repositories.consultation_repository import ConsultationRepository
-from app.schemas.analysis import Evidence, ExtractedContext, RiskLevel
+from app.schemas.analysis import DrugCandidateGroup, Evidence, ExtractedContext, RiskLevel
 from app.schemas.consultation import (
     ConsultationResponse,
     KnowledgeRelation,
@@ -45,7 +49,19 @@ POPULATION_MATCH_TERMS = {
     "心力衰竭": ["心力衰竭", "心衰"],
 }
 
-POPULATION_HIGH_TERMS = ["禁用", "禁止", "禁忌", "不得", "避免", "原则上禁用", "致畸"]
+POPULATION_HIGH_TERMS = [
+    "禁用",
+    "禁止",
+    "禁忌",
+    "不得",
+    "避免",
+    "原则上禁用",
+    "致畸",
+    "不应使用",
+    "胎儿死亡",
+    "胎儿危害",
+    "胎儿损伤",
+]
 POPULATION_MEDIUM_TERMS = [
     "慎用",
     "风险增高",
@@ -81,6 +97,27 @@ POPULATION_SECTION_TITLES = {
     "肝功能相关": ["肝功能", "特殊人群", "警告与注意事项", "用法用量"],
     "心力衰竭": ["心力衰竭", "心衰", "警告与注意事项", "禁忌"],
 }
+CONDITION_MATCH_TERMS = {
+    "高血压": ["高血压", "血压"],
+    "糖尿病": ["糖尿病", "血糖"],
+    "肾功能不全": ["肾功能不全", "肾功能", "肾病", "eGFR"],
+    "肝功能不全": ["肝功能不全", "肝功能", "肝病", "转氨酶"],
+    "心力衰竭": ["心力衰竭", "心衰", "心功能不全"],
+    "冠心病": ["冠心病", "心脏病"],
+}
+CONDITION_HIGH_TERMS = ["禁用", "禁止", "禁忌", "不得", "避免", "不应使用", "严重"]
+CONDITION_MEDIUM_TERMS = [
+    "慎用",
+    "医师指导",
+    "医生指导",
+    "药师指导",
+    "监测",
+    "评估",
+    "调整剂量",
+    "剂量调整",
+    "风险",
+    "不宜",
+]
 RISK_ORDER = {"Unknown": 0, "Low": 1, "Medium": 2, "High": 3}
 KG_HIGH_RELATIONS = {"禁忌合用", "禁用于", "CONTRAINDICATED_WITH", "CONTRAINDICATED_FOR"}
 KG_MEDIUM_RELATIONS = {"慎用于", "检查注意", "USE_WITH_CAUTION_IN", "CAUTION_FOR", "EXAM_CAUTION"}
@@ -89,13 +126,18 @@ KG_MEDIUM_RELATIONS = {"慎用于", "检查注意", "USE_WITH_CAUTION_IN", "CAUT
 class MedicationConsultationService:
     """智能用药咨询服务：上下文记忆 + KG + 向量检索 + 安全评估。"""
 
-    def __init__(self, records: List[Dict], repository: ConsultationRepository):
+    def __init__(
+        self,
+        records: List[Dict],
+        repository: ConsultationRepository,
+        vector_index=None,
+    ):
         self.records = records
         self.repository = repository
         self.extractor = DrugRecognitionStage(records)
         self.vector_backend = VECTOR_BACKEND
         self.retrieval_backend = "hybrid_bm25_dense" if VECTOR_BACKEND == "chroma" else "keyword_tfidf"
-        self.vector_index = self._build_vector_index(records)
+        self.vector_index = vector_index or self._build_vector_index(records)
         self.kg = MedicationKnowledgeGraph(records)
         self.risk_engine = RiskAssessmentStage(records)
         self.llm_client = LLMClient()
@@ -216,6 +258,7 @@ class MedicationConsultationService:
         drugs: list[str],
         extracted: ExtractedContext | None = None,
         snapshot: SessionSnapshot | None = None,
+        candidate_groups: list[DrugCandidateGroup] | None = None,
         top_k: int = 12,
     ) -> list[Evidence]:
         population = self._combined_population(extracted, snapshot)
@@ -229,10 +272,11 @@ class MedicationConsultationService:
             if item.drug in set(drugs) and self._is_population_evidence(item, population)
         ]
         direct_hits = self._direct_population_evidence(drugs, population)
-        return self._prioritize_population_evidence(
+        prioritized = self._prioritize_population_evidence(
             self._dedupe_evidence([*direct_hits, *vector_hits]),
             population,
-        )[:top_k]
+        )
+        return self._diversify_evidence_by_concept(prioritized, candidate_groups or [], top_k)
 
     def _build_population_evidence_query(self, message: str, drugs: list[str], population: list[str]) -> str:
         section_terms: list[str] = []
@@ -281,6 +325,15 @@ class MedicationConsultationService:
             snapshot.population if snapshot else [],
         )
 
+    def _combined_conditions(
+        self,
+        extracted: ExtractedContext | None = None,
+        snapshot: SessionSnapshot | None = None,
+    ) -> list[str]:
+        return sorted(
+            set((extracted.conditions if extracted else []) + (snapshot.conditions if snapshot else []))
+        )
+
     def _merge_population(self, current: list[str], previous: list[str]) -> list[str]:
         merged = set(previous)
         current_set = set(current)
@@ -305,12 +358,59 @@ class MedicationConsultationService:
         evidence: list[Evidence],
         population_evidence: list[Evidence],
         population: list[str],
+        candidate_groups: list[DrugCandidateGroup] | None = None,
         limit: int = 12,
     ) -> list[Evidence]:
         merged = self._dedupe_evidence([*population_evidence, *evidence])
         if population:
             merged = self._prioritize_population_evidence(merged, population)
-        return merged[:limit]
+        return self._diversify_evidence_by_concept(merged, candidate_groups or [], limit)
+
+    def _diversify_evidence_by_concept(
+        self,
+        evidence: list[Evidence],
+        candidate_groups: list[DrugCandidateGroup],
+        limit: int,
+    ) -> list[Evidence]:
+        if not evidence:
+            return []
+
+        candidate_to_concept = {
+            candidate: group.normalized or group.mention
+            for group in candidate_groups
+            for candidate in group.candidates
+        }
+        concept_order: list[str] = []
+        by_concept: dict[str, list[Evidence]] = {}
+        for item in evidence:
+            concept = candidate_to_concept.get(item.drug, item.drug)
+            if concept not in by_concept:
+                by_concept[concept] = []
+                concept_order.append(concept)
+            by_concept[concept].append(item)
+
+        if len(concept_order) <= 1:
+            return evidence[:limit]
+
+        per_concept = max(2, limit // len(concept_order))
+        selected: list[Evidence] = []
+        selected_keys: set[tuple[str, str, str, str]] = set()
+        for concept in concept_order:
+            for item in by_concept[concept][:per_concept]:
+                selected.append(item)
+                selected_keys.add((item.source, item.drug, item.section, item.snippet))
+
+        if len(selected) < limit:
+            for item in evidence:
+                key = (item.source, item.drug, item.section, item.snippet)
+                if key in selected_keys:
+                    continue
+                selected.append(item)
+                selected_keys.add(key)
+                if len(selected) >= limit:
+                    break
+
+        return selected[:limit]
 
     def _dedupe_evidence(self, evidence: list[Evidence]) -> list[Evidence]:
         seen: set[tuple[str, str, str, str]] = set()
@@ -350,20 +450,30 @@ class MedicationConsultationService:
         extracted: ExtractedContext | None = None,
         snapshot: SessionSnapshot | None = None,
         kg_relations: list[KnowledgeRelation] | None = None,
+        drug_concept_count: int | None = None,
+        candidate_groups: list[DrugCandidateGroup] | None = None,
     ) -> tuple[RiskLevel, str, dict]:
-        if extracted and extracted.ambiguous_entities:
+        concept_count = drug_concept_count if drug_concept_count is not None else len(drugs)
+        if extracted and extracted.ambiguous_entities and concept_count < 2:
             return "Unknown", "当前问题包含口语化、类别或复方药品表达，无法作为具体药品组合进行精确相互作用判断。", {}
         population = self._combined_population(extracted, snapshot)
         population_signal = self._population_evidence_signal(
             evidence,
             population,
         )
-        if len(drugs) < 2:
+        condition_signal = self._condition_evidence_signal(
+            evidence,
+            self._combined_conditions(extracted, snapshot),
+        )
+        if concept_count < 2:
             if drugs and population_signal:
                 level, mechanism = population_signal
                 return level, mechanism, {}
+            if drugs and condition_signal:
+                level, mechanism = condition_signal
+                return level, mechanism, {}
             return "Unknown", "当前问题中少于两个明确药物，无法对药物相互作用做确定性判断。", {}
-        pair_hit = self.risk_engine._match_pair(drugs)
+        pair_hit = self._match_pair_across_concepts(drugs, candidate_groups or [])
         risk_level, mechanism = self.risk_engine._assess(drugs, evidence, pair_hit)
         if population_signal:
             population_level, population_mechanism = population_signal
@@ -371,6 +481,12 @@ class MedicationConsultationService:
                 risk_level = population_level
             if population_mechanism not in mechanism:
                 mechanism = f"{mechanism} 同时，{population_mechanism}"
+        if condition_signal:
+            condition_level, condition_mechanism = condition_signal
+            if RISK_ORDER[condition_level] > RISK_ORDER[risk_level]:
+                risk_level = condition_level
+            if condition_mechanism not in mechanism:
+                mechanism = f"{mechanism} 同时，{condition_mechanism}"
         kg_signal = self._kg_risk_signal(kg_relations or [], drugs)
         if kg_signal:
             kg_level, kg_mechanism = kg_signal
@@ -381,6 +497,63 @@ class MedicationConsultationService:
         if not evidence and not pair_hit and not kg_signal:
             return "Unknown", "当前本地知识库和向量检索未找到足够证据，不能做确定性判断。", pair_hit
         return risk_level, mechanism, pair_hit
+
+    def _match_pair_across_concepts(
+        self,
+        drugs: list[str],
+        candidate_groups: list[DrugCandidateGroup],
+    ) -> dict:
+        grouped_candidates = {
+            candidate
+            for group in candidate_groups
+            for candidate in group.candidates
+        }
+        concepts = [{drug} for drug in drugs if drug not in grouped_candidates]
+        concepts.extend(set(group.candidates) for group in candidate_groups)
+        for index, left_group in enumerate(concepts):
+            for right_group in concepts[index + 1:]:
+                for left in left_group:
+                    for right in right_group:
+                        pair = tuple(sorted([left, right]))
+                        if pair in self.risk_engine.drug_pairs:
+                            return {
+                                "left": left,
+                                "right": right,
+                                **self.risk_engine.drug_pairs[pair],
+                            }
+        return {}
+
+    def _candidate_consensus_error(self, groups: list[DrugCandidateGroup]) -> str | None:
+        if not groups:
+            return None
+        records_by_drug = {record.get("drug"): record for record in self.records}
+        for group in groups:
+            levels: set[RiskLevel] = set()
+            missing: list[str] = []
+            for candidate in group.candidates:
+                record = records_by_drug.get(candidate)
+                evidence = [
+                    Evidence(
+                        source=record.get("source", ""),
+                        drug=candidate,
+                        section=section.get("title", ""),
+                        snippet=section.get("content", "")[:2000],
+                        score=1.0,
+                    )
+                    for section in (record or {}).get("sections", [])
+                    if section.get("title") == "药物相互作用" and section.get("content")
+                ]
+                if not evidence:
+                    missing.append(candidate)
+                    continue
+                level, _ = self.risk_engine._assess([candidate], evidence, {})
+                levels.add(level)
+            if missing or len(levels) != 1:
+                return (
+                    f"“{group.mention}”对应的候选制剂在当前知识库中的相互作用证据不完整或不一致，"
+                    "暂不能合并为同一结论。"
+                )
+        return None
 
     def _kg_risk_signal(
         self,
@@ -462,6 +635,47 @@ class MedicationConsultationService:
             return "Medium", f"检索证据提示{groups}用药时风险可能增高，需谨慎使用、监测或由医生药师确认。"
         return None
 
+    @staticmethod
+    def _has_near_terms(text: str, anchors: list[str], signals: list[str], window: int = 48) -> bool:
+        for anchor in anchors:
+            start = text.find(anchor)
+            while start >= 0:
+                left = max(0, start - window)
+                right = min(len(text), start + len(anchor) + window)
+                scope = text[left:right]
+                if any(signal in scope for signal in signals):
+                    return True
+                start = text.find(anchor, start + 1)
+        return False
+
+    def _condition_evidence_signal(self, evidence: list[Evidence], conditions: list[str]) -> tuple[RiskLevel, str] | None:
+        if not evidence or not conditions:
+            return None
+
+        matched: list[tuple[str, Evidence]] = []
+        high_match = False
+        medium_match = False
+        for condition in conditions:
+            match_terms = CONDITION_MATCH_TERMS.get(condition)
+            if not match_terms:
+                continue
+            for item in evidence:
+                text = f"{item.section} {item.snippet}"
+                if any(term in text for term in match_terms):
+                    matched.append((condition, item))
+                    if self._has_near_terms(text, match_terms, CONDITION_HIGH_TERMS):
+                        high_match = True
+                    if self._has_near_terms(text, match_terms, CONDITION_MEDIUM_TERMS):
+                        medium_match = True
+
+        if not matched:
+            return None
+
+        conditions_text = "、".join(sorted({condition for condition, _ in matched}))
+        if high_match or medium_match:
+            return "Medium", f"检索证据提示合并{conditions_text}时需谨慎使用、监测或由医生药师确认。"
+        return None
+
     def _recommendation(
         self,
         risk_level: RiskLevel,
@@ -500,16 +714,44 @@ class MedicationConsultationService:
         flags: list[SafetyFlag] = []
         if extracted and extracted.ambiguous_entities:
             names = "、".join(item.get("mention", "") for item in extracted.ambiguous_entities if item.get("mention"))
-            flags.append(SafetyFlag(level="warning", message=f"{names or '部分药品'}不是明确的具体药品名称，请补充具体名称后再判断。"))
+            concept_count = len(extracted.normalized_drugs) + len(extracted.candidate_drug_groups)
+            if concept_count >= 2 and risk_level != "Unknown":
+                message = f"{names or '部分药品表达'}未识别为明确药品，未纳入本次相互作用计算。"
+            else:
+                message = f"{names or '部分药品'}不是明确的具体药品名称，请补充具体名称后再判断。"
+            flags.append(SafetyFlag(level="warning", message=message))
+        if extracted:
+            for group in extracted.candidate_drug_groups:
+                evidence_count = len({item.drug for item in evidence if item.drug in set(group.candidates)})
+                message = (
+                    f"“{group.mention}”已按药物家族展开为 {len(group.candidates)} 个相关制剂，"
+                    f"本次基于其中 {evidence_count} 个制剂召回到的说明书证据进行综合判断。"
+                )
+                flags.append(
+                    SafetyFlag(
+                        level="info",
+                        message=message,
+                    )
+                )
         if risk_level == "High":
             flags.append(SafetyFlag(level="danger", message="存在高风险或禁忌线索，不建议自行合用。"))
         if not evidence:
             flags.append(SafetyFlag(level="warning", message="未召回足够说明书/指南证据，结论已降级处理。"))
-        if len(snapshot.drugs) < 2:
+        current_concept_count = (
+            len(extracted.normalized_drugs) + len(extracted.candidate_drug_groups)
+            if extracted
+            else len(snapshot.drugs)
+        )
+        if current_concept_count < 2:
             flags.append(SafetyFlag(level="info", message="当前上下文少于两个明确药物，无法完整评估相互作用。"))
         population_signal = self._population_evidence_signal(evidence, snapshot.population)
         if population_signal:
             level, message = population_signal
+            flag_level = "danger" if level == "High" else "warning"
+            flags.append(SafetyFlag(level=flag_level, message=message))
+        condition_signal = self._condition_evidence_signal(evidence, snapshot.conditions)
+        if condition_signal:
+            level, message = condition_signal
             flag_level = "danger" if level == "High" else "warning"
             flags.append(SafetyFlag(level=flag_level, message=message))
         return flags

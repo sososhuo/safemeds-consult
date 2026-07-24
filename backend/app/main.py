@@ -1,3 +1,7 @@
+"""
+FastAPI 应用入口：装配配置、CORS、Repository、Service 与全局异常处理。
+"""
+
 import logging
 
 from fastapi import FastAPI, Request

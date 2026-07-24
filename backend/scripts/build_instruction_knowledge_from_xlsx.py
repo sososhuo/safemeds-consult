@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+说明书知识库构建脚本：把 Excel 清洗结果转换为结构化 JSON 知识库。
+"""
+
 from __future__ import annotations
 
 import argparse

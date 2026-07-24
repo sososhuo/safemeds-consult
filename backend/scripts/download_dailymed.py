@@ -1,3 +1,7 @@
+"""
+DailyMed 下载脚本：抓取英文药品说明书数据用于扩展知识来源。
+"""
+
 import json
 import re
 import xml.etree.ElementTree as ET

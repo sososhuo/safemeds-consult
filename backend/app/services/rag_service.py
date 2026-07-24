@@ -1,3 +1,7 @@
+"""
+RAG 检索服务模块：管理向量检索、关键词召回和证据去重排序。
+"""
+
 import hashlib
 import logging
 import math
@@ -324,12 +328,18 @@ class ChromaRagIndex:
             )
 
     def _ensure_populated(self) -> None:
-        if self.collection.count() != len(self.documents):
-            existing = self.collection.get(include=[])
-            ids = existing.get("ids", [])
-            if ids:
-                self.collection.delete(ids=ids)
+        current_count = self.collection.count()
+        expected_count = len(self.documents)
+        if current_count == expected_count:
+            return
+        if current_count == 0:
             self._populate()
+            return
+        raise RuntimeError(
+            "Chroma collection is incomplete: "
+            f"expected {expected_count} documents, found {current_count}. "
+            "Restore the prebuilt collection or rebuild it explicitly with --reset."
+        )
 
     def retrieve(self, query: str, drugs: List[str], top_k: int = 8) -> List[Evidence]:
         query_tokens = tokenize(query)
@@ -337,11 +347,14 @@ class ChromaRagIndex:
             return []
 
         self._ensure_populated()
-        result = self.collection.query(
-            query_texts=[query],
-            n_results=min(max(top_k * 3, top_k), max(len(self.documents), 1)),
-            include=["documents", "metadatas", "distances"],
-        )
+        query_args = {
+            "query_texts": [query],
+            "n_results": min(max(top_k * 3, top_k), max(len(self.documents), 1)),
+            "include": ["documents", "metadatas", "distances"],
+        }
+        if drugs:
+            query_args["where"] = {"drug": {"$in": sorted(set(drugs))}}
+        result = self.collection.query(**query_args)
         docs = result.get("documents", [[]])[0]
         metadatas = result.get("metadatas", [[]])[0]
         distances = result.get("distances", [[]])[0]

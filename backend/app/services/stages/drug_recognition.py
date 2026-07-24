@@ -14,8 +14,9 @@ from __future__ import annotations
 import re
 from typing import Dict, List, Tuple
 
-from app.core.config import LLM_ENABLE_EXTRACTION
+from app.core.config import DRUG_ALIAS_OVERRIDES_PATH, DRUG_RESOLUTION_INDEX_PATH, LLM_ENABLE_EXTRACTION
 from app.schemas.analysis import ExtractedContext
+from app.services.drug_resolution import DrugNameResolver, normalize_lookup_name
 from app.services.llm_service import LLMClient
 from app.services.stages.base import BaseStage, StageContext
 
@@ -227,6 +228,11 @@ class DrugRecognitionStage(BaseStage):
         # 知识库中的已知药物集合
         self.known_drugs = set(item["drug"] for item in records)
         self.llm_client = LLMClient()
+        self.name_resolver = DrugNameResolver(
+            records,
+            DRUG_RESOLUTION_INDEX_PATH,
+            DRUG_ALIAS_OVERRIDES_PATH,
+        )
 
     @property
     def name(self) -> str:
@@ -248,8 +254,20 @@ class DrugRecognitionStage(BaseStage):
         return ctx
 
     def _extract(self, question: str) -> ExtractedContext:
-        drugs = self._extract_drugs(question)
+        llm_context = self._extract_llm_consultation_context(question)
+        if llm_context is not None:
+            return self._extract_from_llm_context(question, llm_context)
+
+        dictionary_drugs = self._extract_drugs(question)
+        resolved_drugs, candidate_groups = self.name_resolver.resolve(question)
+        drugs = sorted(set([*resolved_drugs, *dictionary_drugs]))
+        candidate_groups = self._filter_negated_candidate_groups(question, candidate_groups)
         ambiguous_entities = self._extract_llm_entities(question, drugs)
+        ambiguous_entities = self._remove_resolved_ambiguities(
+            ambiguous_entities,
+            drugs,
+            candidate_groups,
+        )
         drugs = self._filter_negated(question, drugs)
         normalized = sorted(set(drugs))
 
@@ -264,7 +282,184 @@ class DrugRecognitionStage(BaseStage):
             conditions=conditions,
             risk_factors=risk_factors,
             ambiguous_entities=ambiguous_entities,
+            candidate_drug_groups=candidate_groups,
         )
+
+    def _extract_llm_consultation_context(self, question: str) -> dict | None:
+        if not LLM_ENABLE_EXTRACTION or not self.llm_client.configured:
+            return None
+        extractor = getattr(self.llm_client, "extract_consultation_context", None)
+        if extractor is None:
+            return None
+        try:
+            payload = extractor(question)
+        except Exception:
+            return None
+        if not isinstance(payload, dict):
+            return None
+        if "medications" not in payload:
+            return None
+        return payload
+
+    def _extract_from_llm_context(self, question: str, payload: dict) -> ExtractedContext:
+        drugs: list[str] = []
+        candidate_groups: list[dict] = []
+        ambiguous_entities: list[dict] = []
+
+        for item in payload.get("medications", []) or []:
+            if not isinstance(item, dict):
+                continue
+            status = str(item.get("status") or "unknown").strip().lower()
+            if status == "past":
+                continue
+            mention = str(item.get("mention") or item.get("normalized") or "").strip()
+            normalized = str(item.get("normalized") or mention).strip()
+            for value in dict.fromkeys([mention, normalized]):
+                if not value:
+                    continue
+                context = f"吃{value}" if status in {"current", "intended", "unknown"} else value
+                resolved_drugs, resolved_groups = self.name_resolver.resolve(context)
+                if resolved_drugs or resolved_groups:
+                    drugs.extend(resolved_drugs)
+                    candidate_groups.extend(resolved_groups)
+                    break
+                canonical = self._canonical_from_llm_value(value)
+                if canonical:
+                    drugs.append(canonical)
+                    break
+            else:
+                ambiguous_entities.append(
+                    {
+                        "mention": mention or normalized,
+                        "entity_type": "unknown_specific_drug",
+                        "normalized": normalized or mention,
+                        "reason": "LLM 识别到药物提及，但当前本地知识库未能匹配到对应说明书药品。",
+                        "user_message": "请补充或确认具体药品名称。",
+                    }
+                )
+
+        ambiguous_entities.extend(self._llm_ambiguous_entities(payload))
+        drugs = self._filter_negated(question, sorted(set(drugs)))
+        candidate_groups = self._filter_negated_candidate_groups(
+            question,
+            self.name_resolver._dedupe_groups(candidate_groups),
+        )
+        ambiguous_entities = self._remove_resolved_ambiguities(
+            self._dedupe_ambiguous(ambiguous_entities),
+            drugs,
+            candidate_groups,
+        )
+
+        population = sorted(
+            set(
+                [
+                    *self._extract_population(question),
+                    *[
+                        str(item).strip()
+                        for item in payload.get("population", []) or []
+                        if str(item).strip()
+                    ],
+                ]
+            )
+        )
+        conditions = sorted(
+            set(
+                [
+                    *self._extract_conditions(question),
+                    *[
+                        str(item).strip()
+                        for item in payload.get("conditions", []) or []
+                        if str(item).strip()
+                    ],
+                    *[
+                        str(item).strip()
+                        for item in payload.get("symptoms", []) or []
+                        if str(item).strip()
+                    ],
+                ]
+            )
+        )
+
+        return ExtractedContext(
+            drugs=sorted(set(drugs)),
+            normalized_drugs=sorted(set(drugs)),
+            population=population,
+            conditions=conditions,
+            risk_factors=self._extract_risk_factors(question),
+            ambiguous_entities=ambiguous_entities,
+            candidate_drug_groups=candidate_groups,
+        )
+
+    def _llm_ambiguous_entities(self, payload: dict) -> list[dict]:
+        ambiguous: list[dict] = []
+        for item in payload.get("ambiguous_entities", []) or []:
+            if not isinstance(item, dict):
+                continue
+            mention = str(item.get("mention", "")).strip()
+            if not mention:
+                continue
+            ambiguous.append(
+                {
+                    "mention": mention,
+                    "entity_type": item.get("entity_type") or "unclear_drug",
+                    "normalized": item.get("normalized") or mention,
+                    "reason": item.get("reason") or "该表达不是明确的单一药品名称。",
+                    "user_message": item.get("user_message") or "请补充具体药品名称。",
+                }
+            )
+        return ambiguous
+
+    def _filter_negated_candidate_groups(self, question: str, groups: List[dict]) -> List[dict]:
+        normalized_question = normalize_lookup_name(question)
+        result: List[dict] = []
+        for group in groups:
+            mention = normalize_lookup_name(group.get("mention", ""))
+            mention_start = normalized_question.find(mention)
+            negated = False
+            if mention_start >= 0:
+                for pattern, lookback in NEGATION_PATTERNS:
+                    for match in re.finditer(pattern, normalized_question):
+                        if match.end() <= mention_start and mention_start - match.end() <= lookback:
+                            negated = True
+                            break
+                    if negated:
+                        break
+            if not negated:
+                result.append(group)
+        return result
+
+    def _remove_resolved_ambiguities(
+        self,
+        ambiguous: List[dict],
+        drugs: List[str],
+        candidate_groups: List[dict],
+    ) -> List[dict]:
+        recognized_drugs = set(drugs)
+        recognized_candidates = {
+            candidate
+            for group in candidate_groups
+            for candidate in group.get("candidates", [])
+        }
+        result: List[dict] = []
+        for item in ambiguous:
+            values = [item.get("mention", ""), item.get("normalized", "")]
+            resolved = False
+            for value in values:
+                matched_drugs, matched_groups = self.name_resolver.resolve(str(value))
+                matched_candidates = {
+                    candidate
+                    for group in matched_groups
+                    for candidate in group.get("candidates", [])
+                }
+                if recognized_drugs.intersection(matched_drugs):
+                    resolved = True
+                    break
+                if recognized_candidates.intersection(matched_candidates):
+                    resolved = True
+                    break
+            if not resolved:
+                result.append(item)
+        return result
 
     def _extract_llm_entities(self, question: str, found_drugs: List[str]) -> List[dict]:
         if not LLM_ENABLE_EXTRACTION or not self.llm_client.configured:

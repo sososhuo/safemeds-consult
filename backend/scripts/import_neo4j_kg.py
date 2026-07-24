@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Neo4j 导入脚本：将结构化药品知识关系批量写入知识图谱。
+"""
+
 from __future__ import annotations
 
 import argparse

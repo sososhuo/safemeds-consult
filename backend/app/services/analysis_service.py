@@ -1,3 +1,7 @@
+"""
+药物分析服务模块：面向药物对的相互作用分析和历史记录封装。
+"""
+
 from typing import Dict, List
 
 from app.repositories.history_repository import HistoryRepository

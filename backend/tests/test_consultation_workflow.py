@@ -1,4 +1,5 @@
 """
+模块用途：验证 LangGraph 咨询工作流在无外部图数据库时的编排结果。
 LangGraph 咨询工作流测试
 ========================
 验证 /api/chat 内部 RAG workflow 的节点编排，不依赖 Neo4j 容器。
@@ -16,6 +17,7 @@ from app.schemas.consultation import KnowledgeRelation, SessionSnapshot
 from app.services.llm_service import build_consultation_prompt
 from app.services.consultation_service import MedicationConsultationService
 from app.services.metrics_service import SystemMetrics, system_metrics
+from app.services.rag_service import SimpleRagIndex
 from app.services.stages.risk_assessment import RiskAssessmentStage
 
 TEST_DIR = Path(__file__).resolve().parent
@@ -110,6 +112,14 @@ def load_population_test_records():
     ]
 
 
+def build_test_service(records, repository):
+    return MedicationConsultationService(
+        records=records,
+        repository=repository,
+        vector_index=SimpleRagIndex(records),
+    )
+
+
 class TestMedicationRagWorkflow(unittest.TestCase):
     def test_current_child_age_population_overrides_previous_elderly_snapshot(self):
         service = MedicationConsultationService.__new__(MedicationConsultationService)
@@ -148,7 +158,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
     def test_chat_uses_langgraph_workflow(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            service = build_test_service(load_test_records(), repo)
             service.kg = FakeKnowledgeGraph()
 
             response = service.chat("华法林和布洛芬一起吃可以吗")
@@ -175,7 +185,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
         system_metrics.events.clear()
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            service = build_test_service(load_test_records(), repo)
             service.kg = FakeKnowledgeGraph()
             service.chat("华法林和布洛芬一起吃可以吗")
 
@@ -197,7 +207,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
             drug_recognition.LLM_ENABLE_EXTRACTION = True
             with tempfile.TemporaryDirectory() as tmpdir:
                 repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-                service = MedicationConsultationService(records=load_test_records(), repository=repo)
+                service = build_test_service(load_test_records(), repo)
                 service.kg = FakeKnowledgeGraph()
                 service.extractor.llm_client = FakeExtractionLLM()
 
@@ -218,7 +228,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
             drug_recognition.LLM_ENABLE_EXTRACTION = True
             with tempfile.TemporaryDirectory() as tmpdir:
                 repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-                service = MedicationConsultationService(records=load_test_records(), repository=repo)
+                service = build_test_service(load_test_records(), repo)
                 service.kg = FakeKnowledgeGraph()
                 service.extractor.llm_client = FakeExtractionLLM()
 
@@ -237,7 +247,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
             drug_recognition.LLM_ENABLE_EXTRACTION = True
             with tempfile.TemporaryDirectory() as tmpdir:
                 repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-                service = MedicationConsultationService(records=load_test_records(), repository=repo)
+                service = build_test_service(load_test_records(), repo)
                 service.kg = FakeKnowledgeGraph()
                 service.extractor.llm_client = FakeExtractionLLM()
 
@@ -259,7 +269,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
     def test_population_terms_are_added_to_evidence_query(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            service = build_test_service(load_test_records(), repo)
             extracted = ExtractedContext(
                 drugs=["levofloxacin"],
                 normalized_drugs=["levofloxacin"],
@@ -337,7 +347,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
     def test_child_population_restriction_affects_single_drug_risk(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            service = build_test_service(load_test_records(), repo)
             service.kg = FakeKnowledgeGraph()
 
             response = service.chat("儿童可以吃左氧氟沙星吗")
@@ -351,7 +361,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
     def test_elderly_population_risk_affects_single_drug_risk(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-            service = MedicationConsultationService(records=load_test_records(), repository=repo)
+            service = build_test_service(load_test_records(), repo)
             service.kg = FakeKnowledgeGraph()
 
             response = service.chat("老年人正在服用华法林，需要注意什么")
@@ -365,7 +375,7 @@ class TestMedicationRagWorkflow(unittest.TestCase):
     def test_population_specific_sections_are_forced_into_evidence(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = ConsultationRepository(db_path=Path(tmpdir) / "consultation.sqlite3")
-            service = MedicationConsultationService(records=load_population_test_records(), repository=repo)
+            service = build_test_service(load_population_test_records(), repo)
             service.kg = FakeKnowledgeGraph()
 
             response = service.chat("老人正在服用阿魏酸哌嗪片，需要注意什么")

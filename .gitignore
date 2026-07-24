@@ -6,9 +6,6 @@
 # Local Codex/project assistant assets
 .codex/
 
-# Keep the current local README out of the first GitHub upload.
-README.md
-
 # Python
 __pycache__/
 *.py[cod]
@@ -17,11 +14,10 @@ __pycache__/
 .mypy_cache/
 backend/.venv/
 backend/.venv_linux/
-
-# Local persistence and generated knowledge stores
-backend/storage/*.sqlite3
-backend/storage/*.sqlite3-*
-backend/storage/chroma/
+backend/data/raw/
+backend/data/processed/
+backend/storage/
+models/
 
 # Frontend
 frontend/node_modules/

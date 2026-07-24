@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+手工 Excel 流水线总入口：按顺序执行清洗、向量库和知识图谱构建。
+"""
+
 from __future__ import annotations
 
 import argparse

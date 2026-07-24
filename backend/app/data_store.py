@@ -1,3 +1,7 @@
+"""
+知识数据加载模块：从本地 JSON 知识库读取药品说明书结构化记录。
+"""
+
 import json
 from typing import Dict, List
 

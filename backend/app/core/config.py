@@ -1,3 +1,7 @@
+"""
+配置模块：集中读取环境变量和路径，供 RAG、LLM、数据库与服务启动使用。
+"""
+
 import os
 from pathlib import Path
 
@@ -46,6 +50,14 @@ def _path_from_env(name: str, default: Path) -> Path:
 
 
 DATA_PATH = _path_from_env("SAFEMEDS_DATA_PATH", BACKEND_ROOT / "data" / "processed" / "drug_knowledge_zh.json")
+DRUG_RESOLUTION_INDEX_PATH = _path_from_env(
+    "DRUG_RESOLUTION_INDEX_PATH",
+    BACKEND_ROOT / "data" / "processed" / "drug_resolution_index.json",
+)
+DRUG_ALIAS_OVERRIDES_PATH = _path_from_env(
+    "DRUG_ALIAS_OVERRIDES_PATH",
+    BACKEND_ROOT / "data" / "raw" / "drug_alias_overrides.json",
+)
 STORAGE_DIR = _path_from_env("SAFEMEDS_STORAGE_DIR", BACKEND_ROOT / "storage")
 DATABASE_PATH = _path_from_env("SAFEMEDS_SQLITE_PATH", STORAGE_DIR / "safemeds_history.sqlite3")
 

@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+手工 Excel 流水线第三步：抽取说明书关系并生成知识图谱候选。
+"""
+
 from __future__ import annotations
 
 import argparse

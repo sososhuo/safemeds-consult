@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+文档摄入命令脚本：把本地资料导入后端知识库或检索存储。
+"""
+
 from __future__ import annotations
 
 import argparse

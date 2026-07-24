@@ -1,9 +1,0 @@
-{
-  "knowledge": "/Users/shuo/Documents/project/safemeds-consult/backend/data/processed/instruction_knowledge_from_xlsx.json",
-  "chroma_persist_dir": "/Users/shuo/Documents/project/safemeds-consult/backend/storage/chroma",
-  "collection": "safemeds_drug_knowledge_local_hash_lastmass_qwen3_embedding_med",
-  "drug_records": 19177,
-  "documents": 218087,
-  "collection_count": 218087,
-  "reset": true
-}

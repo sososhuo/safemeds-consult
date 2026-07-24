@@ -1,3 +1,7 @@
+"""
+RAG 消融评估脚本：对比不同检索配置下的召回和回答效果。
+"""
+
 from __future__ import annotations
 
 import json

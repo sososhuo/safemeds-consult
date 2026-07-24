@@ -1,9 +1,17 @@
+"""
+知识图谱服务模块：连接 Neo4j 并校验药物关系、禁忌和风险证据。
+"""
+
 from __future__ import annotations
 
+import logging
 from typing import Iterable, List
 
 from app.core.config import NEO4J_DATABASE, NEO4J_PASSWORD, NEO4J_URI, NEO4J_USER
 from app.schemas.consultation import KnowledgeRelation
+
+
+logger = logging.getLogger(__name__)
 
 
 RELATION_LABELS = {
@@ -127,18 +135,23 @@ class MedicationKnowledgeGraph:
         """
         max_depth = max(1, min(depth, 2))
         query_text = cypher.replace("*1..2", f"*1..{max_depth}")
-        with self._get_driver().session(database=self.database) as session:
-            rows = session.run(query_text, entities=normalized_entities, limit=limit)
-            return [
-                KnowledgeRelation(
-                    subject=row["subject"],
-                    relation=RELATION_LABELS.get(row["relation"], row["relation"].lower()),
-                object=row["object"],
-                source=row["source"],
-                weight=float(row["weight"]),
-                risk_level=row["risk_level"],
-                mechanism=row["mechanism"],
-                recommendation=row["recommendation"],
-            )
-            for row in rows
-        ]
+        try:
+            with self._get_driver().session(database=self.database) as session:
+                rows = session.run(query_text, entities=normalized_entities, limit=limit)
+                return [
+                    KnowledgeRelation(
+                        subject=row["subject"],
+                        relation=RELATION_LABELS.get(row["relation"], row["relation"].lower()),
+                        object=row["object"],
+                        source=row["source"],
+                        weight=float(row["weight"]),
+                        risk_level=row["risk_level"],
+                        mechanism=row["mechanism"],
+                        recommendation=row["recommendation"],
+                    )
+                    for row in rows
+                ]
+        except Exception as exc:
+            logger.warning("Neo4j query unavailable; continuing without KG evidence: %s", exc)
+            self.close()
+            return []

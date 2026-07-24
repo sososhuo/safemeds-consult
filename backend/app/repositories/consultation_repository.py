@@ -1,3 +1,7 @@
+"""
+咨询记录仓储模块：负责咨询请求、响应和指标数据的持久化读写。
+"""
+
 from __future__ import annotations
 
 import json

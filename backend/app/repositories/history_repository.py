@@ -1,3 +1,7 @@
+"""
+历史记录仓储模块：用 SQLite 保存和查询用户咨询历史。
+"""
+
 import json
 import sqlite3
 from datetime import datetime, timezone

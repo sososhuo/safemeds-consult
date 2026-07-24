@@ -1,3 +1,7 @@
+"""
+手工流水线配置模块：集中管理输入、输出和中间产物路径。
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

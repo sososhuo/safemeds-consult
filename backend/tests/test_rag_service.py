@@ -11,8 +11,9 @@ RAG 检索服务单元测试
 import json
 import unittest
 from pathlib import Path
+from unittest.mock import Mock
 
-from app.services.rag_service import BM25RagIndex, HybridRagIndex, SimpleRagIndex, build_documents
+from app.services.rag_service import BM25RagIndex, ChromaRagIndex, HybridRagIndex, SimpleRagIndex, build_documents
 
 TEST_DIR = Path(__file__).resolve().parent
 DATA_PATH = TEST_DIR.parent / "data" / "processed" / "drug_knowledge_zh.json"
@@ -136,6 +137,39 @@ class TestSimpleRagIndex(unittest.TestCase):
         index = SimpleRagIndex(records)
         results = index.retrieve("老人 阿魏酸哌嗪片", ["阿魏酸哌嗪片"], top_k=1)
         self.assertEqual(results[0].snippet, "老人应在专业医师指导下使用")
+
+
+class TestChromaPopulationSafety(unittest.TestCase):
+    def build_index(self, current_count, expected_count=3):
+        index = ChromaRagIndex.__new__(ChromaRagIndex)
+        index.documents = [{}] * expected_count
+        index.collection = Mock()
+        index.collection.count.return_value = current_count
+        index._populate = Mock()
+        return index
+
+    def test_matching_collection_is_left_unchanged(self):
+        index = self.build_index(current_count=3)
+
+        index._ensure_populated()
+
+        index._populate.assert_not_called()
+
+    def test_empty_collection_is_populated(self):
+        index = self.build_index(current_count=0)
+
+        index._ensure_populated()
+
+        index._populate.assert_called_once_with()
+
+    def test_nonempty_mismatched_collection_is_never_rebuilt(self):
+        index = self.build_index(current_count=2)
+
+        with self.assertRaisesRegex(RuntimeError, "expected 3 documents, found 2"):
+            index._ensure_populated()
+
+        index._populate.assert_not_called()
+        index.collection.delete.assert_not_called()
 
 
 class TestHybridRagIndex(unittest.TestCase):

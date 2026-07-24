@@ -1,3 +1,7 @@
+"""
+分析结果 Schema：定义药物相互作用分析、证据和风险等级的数据结构。
+"""
+
 from datetime import datetime
 from typing import List, Literal, Optional
 
@@ -11,6 +15,13 @@ class AnalyzeRequest(BaseModel):
     question: str = Field(..., min_length=2, description="用户输入的中文用药问题")
 
 
+class DrugCandidateGroup(BaseModel):
+    mention: str
+    normalized: str
+    candidates: List[str]
+    source: str
+
+
 class ExtractedContext(BaseModel):
     drugs: List[str]
     normalized_drugs: List[str]
@@ -18,6 +29,7 @@ class ExtractedContext(BaseModel):
     conditions: List[str]
     risk_factors: List[str]
     ambiguous_entities: List[dict] = Field(default_factory=list)
+    candidate_drug_groups: List[DrugCandidateGroup] = Field(default_factory=list)
 
 
 class Evidence(BaseModel):

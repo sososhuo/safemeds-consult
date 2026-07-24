@@ -1,3 +1,7 @@
+"""
+LangGraph 工作流模块：按阶段串联咨询上下文抽取、检索、校验和报告生成。
+"""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, TypedDict
@@ -17,6 +21,7 @@ class MedicationRagState(TypedDict, total=False):
     extracted: ExtractedContext
     snapshot: SessionSnapshot
     query_drugs: list[str]
+    drug_concept_count: int
     kg_entities: list[str]
     kg_relations: list[KnowledgeRelation]
     evidence_query: str
@@ -76,19 +81,38 @@ class MedicationRagWorkflow:
         previous_snapshot = state["previous_snapshot"]
         extracted = self.service.extractor.execute_on_text(message)
         snapshot = self.service._merge_snapshot(previous_snapshot, extracted, message)
-        has_current_medication_signal = bool(extracted.normalized_drugs or extracted.ambiguous_entities)
-        query_drugs = extracted.normalized_drugs if has_current_medication_signal else snapshot.drugs
+        candidate_drugs = [
+            candidate
+            for group in extracted.candidate_drug_groups
+            for candidate in group.candidates
+        ]
+        has_current_medication_signal = bool(
+            extracted.normalized_drugs
+            or extracted.candidate_drug_groups
+            or extracted.ambiguous_entities
+        )
+        query_drugs = (
+            list(dict.fromkeys([*extracted.normalized_drugs, *candidate_drugs]))
+            if has_current_medication_signal
+            else snapshot.drugs
+        )
+        drug_concept_count = (
+            len(extracted.normalized_drugs) + len(extracted.candidate_drug_groups)
+            if has_current_medication_signal
+            else len(snapshot.drugs)
+        )
         kg_entities = list(dict.fromkeys(query_drugs))
         return {
             **state,
             "extracted": extracted,
             "snapshot": snapshot,
             "query_drugs": query_drugs,
+            "drug_concept_count": drug_concept_count,
             "kg_entities": kg_entities,
             "workflow_trace": self._trace(
                 state,
                 "extract_entities",
-                f"识别药物 {len(extracted.normalized_drugs)} 个，上下文药物 {len(snapshot.drugs)} 个。",
+                f"识别明确药物 {len(extracted.normalized_drugs)} 个、候选药品组 {len(extracted.candidate_drug_groups)} 个。",
             ),
         }
 
@@ -138,10 +162,11 @@ class MedicationRagWorkflow:
             state.get("extracted"),
             state.get("snapshot"),
         )
+        top_k = min(max(8, len(state.get("query_drugs", [])) * 2), 24)
         evidence = self.service.vector_index.retrieve(
             evidence_query,
             state.get("query_drugs", []),
-            top_k=8,
+            top_k=top_k,
         )
         query_drugs = set(state.get("query_drugs", []))
         if query_drugs:
@@ -157,11 +182,13 @@ class MedicationRagWorkflow:
             state.get("query_drugs", []),
             state.get("extracted"),
             state.get("snapshot"),
+            state.get("extracted").candidate_drug_groups if state.get("extracted") else [],
         )
         evidence = self.service._merge_and_prioritize_evidence(
             evidence,
             population_evidence,
             population,
+            state.get("extracted").candidate_drug_groups if state.get("extracted") else [],
         )
         return {
             **state,
@@ -182,6 +209,8 @@ class MedicationRagWorkflow:
             state.get("extracted"),
             state.get("snapshot"),
             state.get("kg_relations", []),
+            state.get("drug_concept_count"),
+            state.get("extracted").candidate_drug_groups if state.get("extracted") else [],
         )
         recommendation = self.service._recommendation(
             risk_level,

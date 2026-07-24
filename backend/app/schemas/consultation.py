@@ -1,3 +1,7 @@
+"""
+咨询业务 Schema：定义咨询请求、响应、证据、知识图谱关系和安全提示结构。
+"""
+
 from datetime import datetime
 from typing import Any, List, Literal, Optional
 

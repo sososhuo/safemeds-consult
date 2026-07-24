@@ -1,3 +1,4 @@
+// 前端主应用模块：渲染用药咨询界面、历史记录、风险结果和证据详情。
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {

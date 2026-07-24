@@ -1,3 +1,7 @@
+"""
+API 路由模块：提供用药咨询、历史记录、指标统计和知识库管理接口。
+"""
+
 import logging
 
 from fastapi import APIRouter, HTTPException, Query

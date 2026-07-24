@@ -1,1 +1,3 @@
-"""Manual XLSX-to-RAG/KG pipeline entry points."""
+"""
+手工 Excel 流水线包：提供 XLSX 到 RAG/知识图谱构建脚本集合。
+"""

@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+手工 Excel 流水线第二步：将清洗后的说明书知识构建为向量库。
+"""
+
 from __future__ import annotations
 
 import argparse

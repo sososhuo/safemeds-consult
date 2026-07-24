@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+手工 Excel 流水线第一步：读取原始表格、字段归一并去重导出。
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -20,6 +24,8 @@ from scripts.build_instruction_knowledge_from_xlsx import (  # noqa: E402
     DEFAULT_REPORT_OUTPUT,
     build_records_from_paths,
 )
+from app.core.config import DRUG_ALIAS_OVERRIDES_PATH, DRUG_RESOLUTION_INDEX_PATH  # noqa: E402
+from app.services.drug_resolution import build_resolution_index, load_alias_overrides  # noqa: E402
 from manual_xlsx_pipeline.pipeline_settings import (  # noqa: E402
     MAX_ROWS,
     MIN_SECTION_CHARS,
@@ -52,6 +58,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--knowledge-output", type=Path, default=DEFAULT_KNOWLEDGE_OUTPUT)
     parser.add_argument("--kg-output", type=Path, default=DEFAULT_KG_OUTPUT)
     parser.add_argument("--report-output", type=Path, default=DEFAULT_REPORT_OUTPUT)
+    parser.add_argument("--resolution-index-output", type=Path, default=DRUG_RESOLUTION_INDEX_PATH)
+    parser.add_argument("--alias-overrides", type=Path, default=DRUG_ALIAS_OVERRIDES_PATH)
     parser.add_argument("--max-rows", type=int, default=MAX_ROWS, help="Optional row limit for test runs.")
     parser.add_argument("--min-section-chars", type=int, default=MIN_SECTION_CHARS)
     return parser.parse_args()
@@ -74,6 +82,11 @@ def main() -> None:
     write_json(args.knowledge_output, records)
     write_jsonl(args.kg_output, kg_candidates)
     write_json(args.report_output, report)
+    resolution_index = build_resolution_index(
+        records,
+        load_alias_overrides(args.alias_overrides),
+    )
+    write_json(args.resolution_index_output, resolution_index)
 
     print("Step 1 completed: XLSX deduplicated and extracted.")
     print(f"Input files: {report['input_file_count']}")
@@ -84,6 +97,7 @@ def main() -> None:
     print(f"Knowledge JSON: {args.knowledge_output}")
     print(f"KG candidates JSONL: {args.kg_output}")
     print(f"Build report: {args.report_output}")
+    print(f"Drug resolution index: {args.resolution_index_output}")
 
 
 if __name__ == "__main__":

@@ -37,6 +37,25 @@ class FakeExtractionLLM:
         return self.payload
 
 
+class FakeConsultationContextLLM:
+    configured = True
+
+    def extract_consultation_context(self, message):
+        return {
+            "age": 68,
+            "sex": "female",
+            "population": ["妊娠/备孕"],
+            "conditions": ["糖尿病", "高血压"],
+            "symptoms": ["感冒", "发热"],
+            "medications": [
+                {"mention": "二甲双胍片", "normalized": "二甲双胍片", "status": "current", "confidence": 0.95},
+                {"mention": "缬沙坦胶囊", "normalized": "缬沙坦胶囊", "status": "current", "confidence": 0.98},
+                {"mention": "布洛芬", "normalized": "布洛芬", "status": "intended", "confidence": 0.98},
+            ],
+            "ambiguous_entities": [],
+        }
+
+
 class TestDrugRecognitionStage(unittest.TestCase):
     """药物实体识别核心能力测试。"""
 
@@ -218,6 +237,39 @@ class TestDrugRecognitionStage(unittest.TestCase):
         """肾功能识别。"""
         ctx = self.stage.execute_on_text("肾功能不全患者")
         self.assertIn("肾功能相关", ctx.population)
+
+    def test_llm_context_only_resolves_medication_mentions(self):
+        original_flag = drug_recognition.LLM_ENABLE_EXTRACTION
+        try:
+            drug_recognition.LLM_ENABLE_EXTRACTION = True
+            stage = DrugRecognitionStage(
+                [
+                    {"drug": "盐酸二甲双胍片", "aliases": [], "sections": []},
+                    {"drug": "盐酸二甲双胍缓释片", "aliases": [], "sections": []},
+                    {"drug": "缬沙坦胶囊", "aliases": [], "sections": []},
+                    {"drug": "布洛芬片", "aliases": [], "sections": []},
+                    {"drug": "布洛芬胶囊", "aliases": [], "sections": []},
+                    {"drug": "感冒片", "aliases": [], "sections": []},
+                ]
+            )
+            stage.llm_client = FakeConsultationContextLLM()
+
+            ctx = stage.execute_on_text(
+                "我今年68岁，女，正在怀孕，有糖尿病和高血压，最近感冒发热，"
+                "长期吃二甲双胍片和缬沙坦胶囊，现在想吃布洛芬退烧，可以吗？"
+            )
+        finally:
+            drug_recognition.LLM_ENABLE_EXTRACTION = original_flag
+
+        self.assertIn("妊娠/备孕", ctx.population)
+        self.assertIn("老年人", ctx.population)
+        self.assertIn("糖尿病", ctx.conditions)
+        self.assertIn("高血压", ctx.conditions)
+        self.assertIn("感冒", ctx.conditions)
+        self.assertIn("盐酸二甲双胍片", ctx.normalized_drugs)
+        self.assertIn("缬沙坦胶囊", ctx.normalized_drugs)
+        self.assertTrue(any(group.mention == "布洛芬" for group in ctx.candidate_drug_groups))
+        self.assertFalse(any(group.mention == "感冒" for group in ctx.candidate_drug_groups))
 
     # ─── 疾病识别 ────────────────────────────────────────────
 

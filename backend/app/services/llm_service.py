@@ -1,3 +1,7 @@
+"""
+LLM 服务模块：调用 DeepSeek/OpenAI 兼容接口完成上下文抽取和回答辅助。
+"""
+
 from __future__ import annotations
 
 import json
@@ -58,6 +62,10 @@ class LLMClient:
         content = self.chat(build_entity_extraction_prompt(message), temperature=0.0)
         return _parse_json_object(content)
 
+    def extract_consultation_context(self, message: str) -> dict[str, Any]:
+        content = self.chat(build_consultation_context_prompt(message), temperature=0.0)
+        return _parse_json_object(content)
+
 
 def _parse_json_object(content: str) -> dict[str, Any]:
     try:
@@ -110,6 +118,48 @@ JSON schema：
       "possible_ingredients": ["可能成分1", "可能成分2"],
       "reason": "为什么不能当作单一药品",
       "user_message": "不同厂家成分可能不同，实际以包装或说明书为准"
+    }}
+  ]
+}}
+""".strip()
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def build_consultation_context_prompt(message: str) -> list[dict[str, str]]:
+    system = """
+你是中文用药咨询系统中的医学上下文抽取器，只做结构化抽取，不做用药建议。
+必须输出严格 JSON，不要输出 Markdown。
+
+抽取原则：
+1. medications 只放用户当前正在用、打算用、询问能否合用的药物 mention；可以是通用成分名、简称或完整药名，例如“布洛芬”“二甲双胍”“缬沙坦胶囊”“感冒灵”。
+2. 不要把疾病、症状、检查、风险因素当药物；例如“感冒”“发热”“糖尿病”“高血压”“脑血栓”不是 medications。
+3. conditions 放慢性病、基础疾病或明确诊断；symptoms 放当前症状或短期不适。
+4. population 放特殊人群标签，只能使用：老年人、儿童、妊娠/备孕、哺乳期、肾功能相关、肝功能相关、心力衰竭。
+5. status 使用 current、intended、past、unknown；无法判断时用 unknown。
+6. 不要臆测药品剂型、厂家、剂量或处方方案。
+""".strip()
+    user = f"""
+请抽取下面问题中的用药咨询上下文，并输出严格 JSON：
+
+问题：{message}
+
+JSON schema：
+{{
+  "age": 68,
+  "sex": "male|female|unknown",
+  "population": ["老年人"],
+  "conditions": ["糖尿病", "高血压"],
+  "symptoms": ["感冒", "发热"],
+  "medications": [
+    {{"mention": "原文药名", "normalized": "不补剂型的通用名称或原文药名", "status": "current|intended|past|unknown", "confidence": 0.0}}
+  ],
+  "ambiguous_entities": [
+    {{
+      "mention": "原文提及",
+      "entity_type": "drug_class|drug_intent|unclear_drug",
+      "normalized": "类别或意图名称",
+      "reason": "为什么不够具体",
+      "user_message": "请补充具体药品名称"
     }}
   ]
 }}
