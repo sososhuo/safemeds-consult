@@ -111,14 +111,14 @@ class MedicationKnowledgeGraph:
         cypher = """
         UNWIND $entities AS raw_entity
         MATCH (start)
-        WHERE any(label IN labels(start) WHERE label IN ["Drug", "DrugClass", "Condition", "Scenario"])
+        WHERE any(label IN labels(start) WHERE label IN ["Drug", "DrugClass", "Condition", "Population", "Risk", "Scenario"])
           AND (
             toLower(start.name) = toLower(raw_entity)
             OR toLower(raw_entity) IN [alias IN coalesce(start.aliases, []) | toLower(alias)]
           )
         MATCH path = (start)-[rel*1..2]-(neighbor)
-        WITH relationships(path) AS rels
-        UNWIND rels AS r
+        WITH start, relationships(path) AS rels
+        UNWIND [r IN rels WHERE startNode(r) = start OR endNode(r) = start] AS r
         WITH DISTINCT r
         WITH startNode(r) AS s, type(r) AS relation, endNode(r) AS o, r
         RETURN

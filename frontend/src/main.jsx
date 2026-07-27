@@ -27,7 +27,7 @@ import "./styles.css";
 
 const levelMeta = {
   High: { label: "高风险", action: "不建议自行合用", cls: "risk-high" },
-  Medium: { label: "需谨慎", action: "建议先咨询医生或药师", cls: "risk-medium" },
+  Medium: { label: "有一定风险", action: "建议先咨询医生或药师", cls: "risk-medium" },
   Low: { label: "低风险", action: "仍需按说明书或医嘱使用", cls: "risk-low" },
   Unknown: { label: "信息不足", action: "建议补充用药和身体情况", cls: "risk-unknown" }
 };
@@ -63,8 +63,25 @@ function App() {
   const [error, setError] = useState("");
 
   const risk = useMemo(() => levelMeta[currentResponse?.risk_level] || levelMeta.Unknown, [currentResponse]);
-  const extracted = currentResponse?.extracted_context || { normalized_drugs: [], population: [], conditions: [] };
+  const extracted = currentResponse?.extracted_context || {
+    drugs: [],
+    normalized_drugs: [],
+    population: [],
+    conditions: [],
+    candidate_drug_groups: []
+  };
   const ambiguousEntities = currentResponse?.extracted_context?.ambiguous_entities || [];
+  const candidateDrugGroups = currentResponse?.extracted_context?.candidate_drug_groups || [];
+  const recognizedDrugNames = useMemo(() => {
+    const names = [
+      ...(extracted.normalized_drugs || []),
+      ...(extracted.drugs || []),
+      ...candidateDrugGroups.flatMap((group) => group.candidates || [])
+    ];
+    return [...new Set(names.filter(Boolean))];
+  }, [extracted, candidateDrugGroups]);
+  const recognizedPopulation = extracted.population || [];
+  const recognizedConditions = extracted.conditions || [];
   const evidence = currentResponse?.evidence || [];
   const relations = currentResponse?.kg_relations || [];
   const workflowTrace = currentResponse?.workflow_trace || [];
@@ -160,7 +177,7 @@ function App() {
           </div>
           <div>
             <h1>SafeMeds 用药咨询</h1>
-            <p>药物相互作用、特殊人群用药咨询</p>
+            <p>药物相互作用及用药咨询</p>
           </div>
         </div>
         <div className="topbar-metrics" aria-label="系统能力">
@@ -183,7 +200,7 @@ function App() {
             <MessageCircle size={18} />
             <div>
               <h2>描述你的用药问题</h2>
-              <p>可写明正在服用的药、年龄、疾病、症状或检查安排。</p>
+              <p>可写明年龄、疾病以及正在服用的药。</p>
             </div>
           </div>
 
@@ -225,7 +242,7 @@ function App() {
             <ShieldCheck size={18} />
             <div>
               <strong>安全提示</strong>
-              <p>本系统用于用药风险信息查询和患者教育，不替代医生或药师建议。</p>
+              <p>本系统用于用药风险信息查询，不替代医生或药师建议。</p>
             </div>
           </div>
         </aside>
@@ -249,14 +266,14 @@ function App() {
                 </div>
                 <div className="risk-confidence">
                   <strong>{Math.round((currentResponse.confidence || 0) * 100)}%</strong>
-                  <span>判断置信度</span>
+                  <span>置信度</span>
                 </div>
               </article>
 
               <div className="summary-grid">
                 <div>
                   <span>识别药物</span>
-                  <strong>{extracted.normalized_drugs.length || ambiguousEntities.length}</strong>
+                  <strong>{recognizedDrugNames.length || ambiguousEntities.length}</strong>
                 </div>
                 <div>
                   <span>参考依据</span>
@@ -282,11 +299,28 @@ function App() {
                   <Pill size={17} />
                   <h2>已识别信息</h2>
                 </div>
-                <div className="chips">
-                  {extracted.normalized_drugs.map((item) => <span key={item}>{item}</span>)}
-                  {extracted.population.map((item) => <span key={item}>{item}</span>)}
-                  {extracted.conditions.map((item) => <span key={item}>{item}</span>)}
-                  {!extracted.normalized_drugs.length && !extracted.population.length && !extracted.conditions.length && !ambiguousEntities.length && <em>暂无明确药物或场景信息</em>}
+                <div className="recognized-groups">
+                  <div className="recognized-group">
+                    <span className="recognized-label">药品名</span>
+                    <div className="chips">
+                      {recognizedDrugNames.map((item) => <span key={item}>{item}</span>)}
+                      {!recognizedDrugNames.length && <em>暂无明确药品</em>}
+                    </div>
+                  </div>
+                  <div className="recognized-group">
+                    <span className="recognized-label">人群</span>
+                    <div className="chips">
+                      {recognizedPopulation.map((item) => <span key={item}>{item}</span>)}
+                      {!recognizedPopulation.length && <em>暂无特殊人群</em>}
+                    </div>
+                  </div>
+                  <div className="recognized-group">
+                    <span className="recognized-label">疾病名</span>
+                    <div className="chips">
+                      {recognizedConditions.map((item) => <span key={item}>{item}</span>)}
+                      {!recognizedConditions.length && <em>暂无疾病或症状</em>}
+                    </div>
+                  </div>
                 </div>
                 {ambiguousEntities.length > 0 && (
                   <div className="ambiguous-list">
@@ -368,7 +402,7 @@ function App() {
           <div className="history-head">
             <div>
               <History size={17} />
-              <h2>历史咨询</h2>
+              <h2>我的咨询</h2>
             </div>
             {sessionLoading && <Loader2 className="spin" size={15} />}
           </div>

@@ -42,6 +42,8 @@ class MedicationRagState(TypedDict, total=False):
 class MedicationRagWorkflow:
     """LangGraph workflow for the medication consultation RAG path."""
 
+    EXCLUDED_KG_RELATIONS = {"supported_by"}
+
     def __init__(self, service: MedicationConsultationService):
         self.service = service
         self.graph = self._build_graph()
@@ -132,18 +134,22 @@ class MedicationRagWorkflow:
         raw_relations = self.service.kg.query(
             state.get("kg_entities", []),
             depth=2 if len(query_drugs) >= 2 else 1,
+            limit=min(max(80, len(state.get("kg_entities", [])) * 8), 240),
         )
         drug_set = set(query_drugs)
-        if len(drug_set) >= 2:
-            kg_relations = [
-                item for item in raw_relations
-                if item.subject in drug_set and item.object in drug_set
+        extracted = state.get("extracted")
+        snapshot = state.get("snapshot")
+        context_set = set(
+            [
+                *self.service._combined_population(extracted, snapshot),
+                *self.service._combined_conditions(extracted, snapshot),
+                *(extracted.risk_factors if extracted else []),
             ]
-        else:
-            kg_relations = [
-                item for item in raw_relations
-                if item.subject in drug_set or item.object in drug_set
-            ]
+        )
+        kg_relations = [
+            item for item in raw_relations
+            if self._is_relevant_kg_relation(item, drug_set, context_set)
+        ]
         return {
             **state,
             "kg_relations": kg_relations,
@@ -153,6 +159,27 @@ class MedicationRagWorkflow:
                 f"Neo4j 返回图谱关系 {len(kg_relations)} 条。",
             ),
         }
+
+    def _is_relevant_kg_relation(
+        self,
+        item: KnowledgeRelation,
+        drug_set: set[str],
+        context_set: set[str],
+    ) -> bool:
+        if item.relation in self.EXCLUDED_KG_RELATIONS:
+            return False
+
+        subject_is_drug = item.subject in drug_set
+        object_is_drug = item.object in drug_set
+        if subject_is_drug and object_is_drug:
+            return True
+
+        if subject_is_drug or object_is_drug:
+            other = item.object if subject_is_drug else item.subject
+            if other in context_set:
+                return True
+
+        return False
 
     def _retrieve_evidence(self, state: MedicationRagState) -> MedicationRagState:
         evidence_query = self.service._build_evidence_query(

@@ -201,13 +201,41 @@ curl -s -X POST http://127.0.0.1:8000/api/chat \
 | 字段                  | 说明                                   |
 | ------------------- | ------------------------------------ |
 | `risk_level`        | 风险等级：`Low`、`Medium`、`High`、`Unknown` |
-| `confidence`        | 当前结论置信度                              |
+| `confidence`        | 规则化依据支撑分，不代表真实医学概率                    |
 | `extracted_context` | 抽取到的人群、疾病、症状、药物等上下文                  |
 | `kg_relations`      | Neo4j 命中的图谱关系                        |
 | `evidence`          | RAG 检索证据片段                           |
 | `safety_flags`      | 特殊人群、慢病、家族扩展、证据不足等安全提示               |
 | `workflow_trace`    | LangGraph 各阶段执行轨迹                    |
 | `safety_notice`     | 医疗安全免责声明                             |
+
+### 依据支撑分
+
+`confidence` 是系统内部用于表达“当前结论有多少检索和图谱证据支撑”的工程启发式评分，不代表真实医学风险概率，也不表示用药安全概率。
+
+计算规则：
+
+```text
+confidence > 0.82：
+命中明确药物-药物相互作用规则，当前固定为 0.88
+
+confidence = 0.32：
+风险等级为 Unknown，表示证据不足或药品信息不明确
+
+0.48 ~ 0.82：
+基于 RAG 参考依据数量和 Neo4j 图谱关系数量计算：
+confidence = min(
+  0.48 + min(参考依据数量, 5) × 0.06 + min(KG 关系数量, 5) × 0.03,
+  0.82
+)
+```
+
+其中：
+
+- `参考依据数量` 来自 RAG 返回的说明书证据片段数量；
+- `KG 关系数量` 来自 Neo4j 命中的结构化图谱关系数量；
+- 普通 RAG/KG 证据型判断最高为 `0.82`；
+- 明确相互作用规则命中时高于普通证据型上限，固定为 `0.88`。
 
 ### 主要接口
 
@@ -312,7 +340,6 @@ safemeds-consult/
 ├── frontend/
 │   ├── src/                     # React 咨询工作台
 │   └── package.json
-├── docs/                        # 架构和路线文档
 ├── docker-compose.yml
 └── README.md
 ```

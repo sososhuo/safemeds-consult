@@ -575,7 +575,7 @@ textarea:focus {
 }
 
 .risk-main p {
-  max-width: 780px;
+  max-width: 1000px;
   margin-top: 11px;
   color: var(--text);
   font-size: 15px;
@@ -676,6 +676,25 @@ textarea:focus {
   color: var(--text);
   font-size: 15px;
   line-height: 1.92;
+}
+
+.recognized-groups {
+  display: grid;
+  gap: 13px;
+}
+
+.recognized-group {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: start;
+  gap: 12px;
+}
+
+.recognized-label {
+  padding-top: 7px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
 }
 
 .chips {
