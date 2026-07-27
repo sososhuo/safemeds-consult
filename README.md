@@ -182,6 +182,7 @@ PYTHONPATH=backend backend/.venv/bin/python backend/scripts/import_neo4j_kg.py -
 ```bash
 backend/.venv/bin/python backend/manual_*_pipeline/04_run_all.py### 
 ```
+若有需要10万条药品说明书数据，可联系sososhuo邮箱。
 
 ## API 示例
 
