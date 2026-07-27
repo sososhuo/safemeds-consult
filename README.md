@@ -1,6 +1,6 @@
 # SafeMeds Consult
 
-> 中文用药安全咨询 Agent：基于 LLM 上下文抽取、药物标准化、Chroma RAG、Neo4j 知识图谱和 LangGraph 工作流，生成可追溯、有证据边界的用药风险提示。
+> 面向用药安全咨询的 agentic RAG 工作流：基于 LLM 上下文抽取、药物标准化、Chroma RAG、Neo4j 知识图谱和 LangGraph 工作流，生成可追溯、有证据边界的用药风险提示。
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
